@@ -17,5 +17,5 @@ Scelte che valgono oltre la singola tappa: una riga per scelta, con la data.
 - 2026-10-11 | L'elenco delle registrazioni dei pasti nel modello dati si chiama `MealEntry`, non più `MealLog`, per non confonderlo con il vecchio nome dell'app. Confermato dall'utente.
 - 2026-10-11 | Piani: uno per tappa, nella cartella `Docs/Ai/Plans`.
 - 2026-10-11 | Modalità: a moduli. Si cambia se non si rivela quella giusta.
-- 2026-10-11 | Version control: git. La repo la crea l'utente, più avanti.
+- 2026-10-11 | Version control: git. La repo l'ha creata l'utente il 2026-10-11, e i commit li fa lui.
 - 2026-10-11 | Dispositivi di prova: telefono vero collegato via cavo, orologio emulato.
