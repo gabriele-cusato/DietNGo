@@ -25,6 +25,12 @@ DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco, 
 - I warning si risolvono, non si ignorano e non si nascondono: quelli del compilatore, di Gradle, di Android Studio e quelli di obsolescenza. L'app deve restare pulita per durare nel tempo. Un warning che non si riesce a risolvere si riporta all'utente con il motivo: lasciarlo o sopprimerlo lo decide lui.
 - Le informazioni verificate online che possono riservire si scrivono nella cartella `Docs/Info`, in una sottocartella per argomento, con la data della verifica e le pagine lette. Prima di cercare online si guarda lì.
 
+## Progetto dell'app e design
+
+- La descrizione di ogni pagina dell'app, con le scelte di esperienza d'uso, sta nella cartella `Docs/Progetto`, un file per pagina: oggi c'è `Docs/Progetto/Home.md`. Il design di una pagina sta in `Docs/Progetto/Design/<Pagina>`, copia dei file del canvas; il link al canvas è scritto nel file della pagina.
+- Prima di un piano o di codice che riguarda una pagina si legge, senza chiedere, il suo file in `Docs/Progetto`. I file del design si leggono solo quando servono misure, colori, animazioni o la disposizione esatta: in quel caso basta il file `Main.dc.html` della pagina, che contiene tutta la pagina.
+- Le scelte che valgono per tutta l'app, come colori, regole sui dati, pasti dettati e piattaforme, stanno in `Docs/Ai/DECISIONS.md`, che si legge già a inizio sessione.
+
 ## Linee guida
 
 - Le linee guida stanno nella cartella `Docs/Guidelines`: l'indice è il file `Docs/Guidelines/Indice.md`.
