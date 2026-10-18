@@ -18,6 +18,7 @@ Ogni sezione sta in un file con il suo nome, dentro una cartella con lo stesso n
 | File | Voci | Riguarda |
 |---|---|---|
 | `Generali/Propedeutici/Propedeutici.md` | P1, P2, P3, P4, P5 | Obiettivi generali: si legge sempre |
+| `Mobile/Piattaforme/Piattaforme.md` | M1 | App su Android e iPhone: strade ufficiali e corrispettivi fra le due piattaforme |
 
 ## Voci generali
 
@@ -28,3 +29,4 @@ Ogni sezione sta in un file con il suo nome, dentro una cartella con lo stesso n
 | P3 | Il compromesso fra P1 e P2 lo decide l'utente, in fase di pianificazione | `Generali/Propedeutici/Propedeutici.md` |
 | P4 | Metodo pilota e metodi foglia | `Generali/Propedeutici/Propedeutici.md` |
 | P5 | Ciò che deve gestire chi non ha scritto il codice sta fuori dal codice | `Generali/Propedeutici/Propedeutici.md` |
+| M1 | Ogni soluzione usa la strada ufficiale e ha un corrispettivo ufficiale sull'altra piattaforma | `Mobile/Piattaforme/Piattaforme.md` |

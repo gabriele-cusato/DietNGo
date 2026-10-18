@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dietngo"
+    namespace = "com.gabrielecusato.dietngo"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.dietngo"
+        applicationId = "com.gabrielecusato.dietngo"
         minSdk = 30
         targetSdk = 37
         versionCode = 1

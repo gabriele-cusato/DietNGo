@@ -19,11 +19,11 @@ Indicazioni e correzioni date dall'utente:
 
 ## Linguaggio: parallelismi usati e non contestati
 
-Le righe vengono dal file `mobile/src/main/java/com/example/dietngo/MainActivity.kt`.
+Le righe vengono dal file `mobile/src/main/java/com/gabrielecusato/dietngo/MainActivity.kt`.
 
 | Kotlin | In C# | Cosa cambia |
 |---|---|---|
-| `package com.example.dietngo` | `namespace` | il pacchetto ricalca le cartelle |
+| `package com.gabrielecusato.dietngo` | `namespace` | il pacchetto ricalca le cartelle |
 | `import android.os.Bundle` | `using` | si importa la singola classe |
 | `class MainActivity : ComponentActivity()` | `class MainActivity : ComponentActivity` | le parentesi chiamano il costruttore della classe base |
 | `override fun onCreate(savedInstanceState: Bundle?)` | `override void OnCreate(Bundle? savedInstanceState)` | `fun` apre ogni funzione, il tipo sta dopo il nome, `?` vuol dire «può essere null» |
@@ -48,6 +48,9 @@ Le righe vengono dal file `mobile/src/main/java/com/example/dietngo/MainActivity
 | compilatore di Kotlin | Roslyn, cioè il compilatore di C# | |
 | Gradle con il plugin Android, che produce l'APK | MSBuild, che impacchetta | il plugin è la riga `alias(libs.plugins.android.application)` |
 | ART | runtime di .NET | esegue il bytecode sul dispositivo |
+| WorkManager | pacchetto NuGet di job ricorrenti, come Hangfire | libreria aggiunta da noi; quando gira lo decide Android |
+| pg_cron di Supabase | job di SQL Server Agent | lancia a orario un comando dentro il database |
+| Edge Function di Supabase | Azure Function con trigger HTTP | codice nostro che gira sui server di Supabase |
 | garbage collector | garbage collector | |
 | pannello «Build Variants», con `debug` e `release` | menu Debug e Release nella barra di Visual Studio | la `release` va firmata con una chiave propria |
 | versione di Gradle | versione di .NET con cui si compila | si cambia quando serve, non a ogni uscita |

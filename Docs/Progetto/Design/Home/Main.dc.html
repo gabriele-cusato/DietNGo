@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>DietNGo, home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: {{c.bg}}; color: {{c.text}}; font-family: Figtree, 'Segoe UI', system-ui, sans-serif">
+
+  <!-- Luci e materiali comuni a tutte le illustrazioni -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="luce" cx=".34" cy=".28" r=".8">
+        <stop offset="0" stop-color="#fff" stop-opacity=".8"></stop>
+        <stop offset=".38" stop-color="#fff" stop-opacity="0"></stop>
+        <stop offset="1" stop-color="#000" stop-opacity=".3"></stop>
+      </radialGradient>
+      <linearGradient id="corpo" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#000" stop-opacity=".3"></stop>
+        <stop offset=".26" stop-color="#fff" stop-opacity=".42"></stop>
+        <stop offset=".5" stop-color="#fff" stop-opacity="0"></stop>
+        <stop offset="1" stop-color="#000" stop-opacity=".34"></stop>
+      </linearGradient>
+      <linearGradient id="ceramica" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"></stop>
+        <stop offset="1" stop-color="#EAE1D3"></stop>
+      </linearGradient>
+      <linearGradient id="ceramicaLato" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#CFC3B0"></stop>
+        <stop offset=".45" stop-color="#F4EEE4"></stop>
+        <stop offset="1" stop-color="#C7BAA6"></stop>
+      </linearGradient>
+      <radialGradient id="pozzo" cx=".5" cy=".4" r=".7">
+        <stop offset="0" stop-color="#F8F2E8"></stop>
+        <stop offset="1" stop-color="#E2D7C6"></stop>
+      </radialGradient>
+      <radialGradient id="piano" cx=".42" cy=".3" r=".75">
+        <stop offset="0" stop-color="{{c.topIn}}"></stop>
+        <stop offset="1" stop-color="{{c.topOut}}"></stop>
+      </radialGradient>
+      <linearGradient id="bordo" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="{{c.bandSide}}"></stop>
+        <stop offset=".42" stop-color="{{c.band}}"></stop>
+        <stop offset="1" stop-color="{{c.bandSide}}"></stop>
+      </linearGradient>
+      <linearGradient id="riflesso" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"></stop>
+        <stop offset=".5" stop-color="#fff" stop-opacity="{{c.gloss}}"></stop>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+      </linearGradient>
+      <filter id="sfoca" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="3"></feGaussianBlur></filter>
+      <filter id="morbida" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="16"></feGaussianBlur></filter>
+    </defs>
+  </svg>
+
+  <!-- Finestra sul luogo: un'apertura ad arco senza traverse, con dentro la scena sfocata che si muove piano -->
+  <div aria-hidden="true" style="position: absolute; left: -40px; right: -40px; top: 40px; height: 600px; border-radius: 50%; background: radial-gradient(closest-side, {{c.wallGlow}}, transparent); opacity: {{uiOpacity}}; transition: opacity 260ms"></div>
+  <div aria-hidden="true" style="position: absolute; left: 18px; right: 18px; top: 64px; height: 560px; border-radius: 177px 177px 32px 32px; overflow: hidden; background: {{winBg}}; opacity: {{uiOpacity}}; transition: opacity 260ms, background 300ms">
+    <div style="position: absolute; left: -30px; top: -30px; width: 414px; height: 620px; opacity: {{sceneOpacity}}; transform: translate({{kb.x}}px, {{kb.y}}px) scale({{kb.s}}); transition: transform 16s ease-in-out">
+      <svg viewBox="0 0 414 620" width="414" height="620" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#6FAEE3"></stop>
+            <stop offset=".5" stop-color="#BFDDF2"></stop>
+            <stop offset="1" stop-color="#FCE1BC"></stop>
+          </linearGradient>
+          <linearGradient id="mare" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4C9CBD"></stop>
+            <stop offset="1" stop-color="#17506E"></stop>
+          </linearGradient>
+          <filter id="fuoco" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="5"></feGaussianBlur></filter>
+          <filter id="bokeh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"></feGaussianBlur></filter>
+        </defs>
+        <g filter="url(#fuoco)">
+          <rect x="0" y="0" width="414" height="350" fill="url(#cielo)"></rect>
+          <ellipse cx="120" cy="120" rx="90" ry="22" fill="#fff" opacity=".55"></ellipse>
+          <ellipse cx="300" cy="80" rx="70" ry="16" fill="#fff" opacity=".45"></ellipse>
+          <circle cx="292" cy="300" r="70" fill="#FFF3D2" opacity=".9"></circle>
+          <path d="M0 330c40-26 80-44 120-40s60 26 90 40H0z" fill="#7896AE"></path>
+          <path d="M0 340c30-12 60-18 96-14s50 10 70 14H0z" fill="#5E7F98"></path>
+          <rect x="0" y="340" width="414" height="280" fill="url(#mare)"></rect>
+          <path d="M210 352h160M190 376h200M170 404h230" stroke="#FFF6DA" stroke-width="3" stroke-linecap="round" opacity=".7"></path>
+          <path d="M0 470c60-14 140-10 200 0s150 12 214-4v154H0z" fill="#E9D3AE"></path>
+          <path d="M0 500c70-10 150-4 210 6s140 8 204-6v120H0z" fill="#DCC197"></path>
+        </g>
+        <circle cx="30" cy="40" r="46" fill="#3E7A47" opacity=".75" filter="url(#bokeh)"></circle>
+        <circle cx="388" cy="70" r="40" fill="#4C8A50" opacity=".7" filter="url(#bokeh)"></circle>
+        <circle cx="400" cy="200" r="30" fill="#5E9A5E" opacity=".55" filter="url(#bokeh)"></circle>
+      </svg>
+    </div>
+    <div style="position: absolute; inset: 0; opacity: {{sceneOpacity}}; background: linear-gradient(to bottom, rgba(8,20,32,.42), rgba(8,20,32,.12) 52%, rgba(8,20,32,0) 75%)"></div>
+    <div style="position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 14px 26px {{c.edge}}, inset 10px 0 22px {{c.edgeSide}}, inset -10px 0 22px {{c.edgeSide}}, inset 0 0 0 1px {{c.edgeLine}}"></div>
+  </div>
+
+  <!-- Piano girevole: più largo dello schermo, visto di fronte -->
+  <div onPointerDown="{{down}}" onPointerUp="{{up}}" style="position: absolute; inset: 0; opacity: {{uiOpacity}}; transition: opacity 260ms; touch-action: none">
+    <svg width="390" height="844" viewBox="0 0 390 844" style="position: absolute; left: 0; top: 0" aria-hidden="true">
+      <ellipse cx="195" cy="702" rx="290" ry="40" fill="#000" opacity="{{c.floor}}" filter="url(#morbida)"></ellipse>
+      <ellipse cx="195" cy="588" rx="300" ry="100" fill="url(#bordo)"></ellipse>
+      <rect x="-105" y="560" width="600" height="28" fill="url(#bordo)"></rect>
+      <ellipse cx="195" cy="560" rx="300" ry="100" fill="url(#piano)"></ellipse>
+      <ellipse cx="195" cy="560" rx="300" ry="100" fill="none" stroke="{{c.rimLight}}" stroke-width="2"></ellipse>
+      <ellipse cx="195" cy="560" rx="214" ry="70" fill="none" stroke="{{c.groove}}" stroke-width="1.2"></ellipse>
+    </svg>
+
+    <sc-for list="{{items}}" as="t" hint-placeholder-count="3">
+      <div style="position: absolute; left: {{t.x}}px; top: {{t.y}}px; width: 170px; height: 130px; transform: translate(-50%, -100%) scale({{t.s}}); transform-origin: 50% 100%; opacity: {{t.o}}; filter: saturate({{t.sat}}); z-index: {{t.z}}">
+        <button onClick="{{t.pick}}" aria-label="{{t.label}}" style="all: unset; cursor: pointer; display: block; width: 170px; height: 130px">
+          <sc-if value="{{t.isPlus}}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 170 130" width="170" height="130" aria-hidden="true">
+              <ellipse cx="85" cy="104" rx="36" ry="7" fill="#000" opacity="{{c.contact}}" filter="url(#sfoca)"></ellipse>
+              <ellipse cx="85" cy="104" rx="60" ry="16" fill="none" stroke="{{c.muted}}" stroke-width="2.5" stroke-dasharray="5 7" stroke-linecap="round"></ellipse>
+              <circle cx="85" cy="60" r="32" fill="{{c.plusBg}}"></circle>
+              <circle cx="85" cy="60" r="32" fill="url(#luce)"></circle>
+              <path d="M85 45v30M70 60h30" stroke="{{c.plusInk}}" stroke-width="5.5" stroke-linecap="round"></path>
+            </svg>
+          </sc-if>
+          <sc-if value="{{t.isPasta}}" hint-placeholder-val="{{ true }}">
+            <svg viewBox="0 0 170 130" width="170" height="130" aria-hidden="true">
+              <ellipse cx="85" cy="114" rx="70" ry="10" fill="#000" opacity="{{c.contact}}" filter="url(#sfoca)"></ellipse>
+              <path d="M13 96a72 20 0 0 0 144 0v6a72 20 0 0 1-144 0z" fill="url(#ceramicaLato)"></path>
+              <ellipse cx="85" cy="96" rx="72" ry="20" fill="url(#ceramica)"></ellipse>
+              <ellipse cx="85" cy="97" rx="54" ry="13" fill="url(#pozzo)"></ellipse>
+              <path d="M22 91a70 18 0 0 1 56-13" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M38 96c-2-28 20-48 47-48s49 20 47 48c-14 8-80 8-94 0z" fill="#F0B347"></path>
+              <path d="M38 96c-2-28 20-48 47-48s49 20 47 48c-14 8-80 8-94 0z" fill="url(#luce)"></path>
+              <path d="M46 90c6-18 26-26 42-16M54 98c12-14 36-18 58-4M44 80c14-22 48-26 70-4M64 66c12-8 30-6 38 4M104 92c8-6 14-14 14-22" fill="none" stroke="#C9821F" stroke-width="3.6" stroke-linecap="round"></path>
+              <path d="M47 88c6-16 24-24 40-15M55 96c12-13 35-17 56-4M45 78c14-20 46-24 68-4" fill="none" stroke="#FFE4A3" stroke-width="1.4" stroke-linecap="round" opacity=".9"></path>
+              <path d="M56 72c0-16 13-24 29-24s29 8 29 24c-8 7-50 7-58 0z" fill="#D63A22"></path>
+              <path d="M56 72c0-16 13-24 29-24s29 8 29 24c-8 7-50 7-58 0z" fill="url(#luce)"></path>
+              <ellipse cx="73" cy="57" rx="9" ry="3.6" fill="#fff" opacity=".8" transform="rotate(-16 73 57)"></ellipse>
+              <circle cx="96" cy="64" r="2.2" fill="#fff" opacity=".7"></circle>
+              <path d="M88 50c7-10 19-10 25-5-5 8-15 10-25 5z" fill="#3E9A4C"></path>
+              <path d="M88 50c7-10 19-10 25-5-5 8-15 10-25 5z" fill="url(#luce)"></path>
+              <path d="M90 49c6-3 13-4 20-3" stroke="#2A6E35" stroke-width="1" fill="none"></path>
+              <path d="M86 52c-3-9 1-16 8-19 3 7 0 14-8 19z" fill="#2F8240"></path>
+              <path d="M62 84l4-2 2 3-4 2zM100 82l4-1 1 3-4 1zM80 90l3-2 2 2-3 2z" fill="#FFF6DA"></path>
+            </svg>
+          </sc-if>
+          <sc-if value="{{t.isBowl}}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 170 130" width="170" height="130" aria-hidden="true">
+              <ellipse cx="85" cy="115" rx="56" ry="9" fill="#000" opacity="{{c.contact}}" filter="url(#sfoca)"></ellipse>
+              <path d="M25 64h120c0 32-26 50-60 50S25 96 25 64z" fill="{{t.f1}}"></path>
+              <path d="M25 64h120c0 32-26 50-60 50S25 96 25 64z" fill="url(#corpo)"></path>
+              <path d="M38 76c2 12 9 21 19 27" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"></path>
+              <ellipse cx="85" cy="64" rx="60" ry="17" fill="{{t.f1d}}"></ellipse>
+              <ellipse cx="85" cy="64" rx="60" ry="17" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.6"></ellipse>
+              <path d="M31 64c4-22 26-34 54-34s50 12 54 34c-10 9-98 9-108 0z" fill="{{t.f2}}"></path>
+              <path d="M31 64c4-22 26-34 54-34s50 12 54 34c-10 9-98 9-108 0z" fill="url(#luce)"></path>
+              <ellipse cx="62" cy="52" rx="13" ry="9" fill="{{t.f3}}"></ellipse><ellipse cx="62" cy="52" rx="13" ry="9" fill="url(#luce)"></ellipse>
+              <ellipse cx="102" cy="50" rx="11" ry="8" fill="{{t.f4}}"></ellipse><ellipse cx="102" cy="50" rx="11" ry="8" fill="url(#luce)"></ellipse>
+              <ellipse cx="84" cy="41" rx="10" ry="8" fill="{{t.f3}}"></ellipse><ellipse cx="84" cy="41" rx="10" ry="8" fill="url(#luce)"></ellipse>
+              <ellipse cx="80" cy="60" rx="9" ry="6" fill="{{t.f5}}"></ellipse><ellipse cx="80" cy="60" rx="9" ry="6" fill="url(#luce)"></ellipse>
+              <ellipse cx="114" cy="60" rx="7" ry="5" fill="{{t.f5}}"></ellipse><ellipse cx="114" cy="60" rx="7" ry="5" fill="url(#luce)"></ellipse>
+              <ellipse cx="48" cy="62" rx="7" ry="5" fill="{{t.f4}}"></ellipse><ellipse cx="48" cy="62" rx="7" ry="5" fill="url(#luce)"></ellipse>
+              <circle cx="58" cy="48" r="2.4" fill="#fff" opacity=".85"></circle><circle cx="99" cy="47" r="2" fill="#fff" opacity=".85"></circle><circle cx="81" cy="38" r="2" fill="#fff" opacity=".85"></circle>
+            </svg>
+          </sc-if>
+        </button>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- Zona alta: momento del pasto e motivo del consiglio; con un errore, solo il riquadro dell'errore -->
+  <sc-if value="{{showReason}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; left: 32px; right: 32px; top: 268px; z-index: 200; text-align: center; opacity: {{uiOpacity}}; transition: opacity 260ms">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.85); text-shadow: 0 1px 10px rgba(0,0,0,.35)">{{momento}}</div>
+      <div style="margin-top: 8px; font-size: 20px; font-weight: 600; line-height: 1.3; text-wrap: balance; color: #fff; text-shadow: 0 1px 14px rgba(0,0,0,.4)">{{cur.why}}</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{showError}}" hint-placeholder-val="{{ false }}">
+    <div role="alert" style="position: absolute; left: 20px; right: 20px; top: 236px; z-index: 200; box-sizing: border-box; padding: 16px 16px 16px 18px; border-radius: 22px; background: {{c.errBg}}; box-shadow: inset 0 0 0 1px {{c.errRing}}; display: flex; align-items: center; gap: 14px; opacity: {{uiOpacity}}; transition: opacity 260ms">
+      <div style="flex: none; width: 40px; height: 40px; border-radius: 50%; background: {{c.errDot}}; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 7v6M12 17h.01"></path></svg>
+      </div>
+      <div style="flex: 1; min-width: 0">
+        <div style="font-size: 16px; font-weight: 700; color: {{c.errText}}">1 errore in un pasto dettato</div>
+        <div style="margin-top: 2px; font-size: 14px; color: {{c.errText}}; opacity: .8">Gli altri rimarranno in attesa</div>
+      </div>
+      <button style="all: unset; cursor: pointer; flex: none; height: 44px; padding: 0 16px; border-radius: 14px; background: {{c.errDot}}; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center">Controlla</button>
+    </div>
+  </sc-if>
+
+  <!-- Ora e quantità, sopra il pasto di fronte -->
+  <sc-if value="{{showChips}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; left: 0; right: 0; top: 400px; z-index: 200; display: flex; justify-content: center; gap: 10px; opacity: {{uiOpacity}}; transition: opacity 260ms">
+      <button aria-label="Cambia ora" style="all: unset; cursor: pointer; box-sizing: border-box; min-width: 96px; height: 44px; padding: 0 16px; border-radius: 14px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600; color: {{c.text}}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        {{ora}}
+      </button>
+      <button aria-label="Cambia quantità" style="all: unset; cursor: pointer; box-sizing: border-box; min-width: 96px; height: 44px; padding: 0 16px; border-radius: 14px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600; color: {{c.text}}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20h14l-2-11H7z"></path><path d="M9 9a3 3 0 0 1 6 0"></path></svg>
+        {{cur.qty}}
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- Titolo sotto il piano -->
+  <div style="position: absolute; left: 24px; right: 24px; top: 704px; z-index: 200; text-align: center; opacity: {{uiOpacity}}; transition: opacity 260ms">
+    <div style="font-size: 22px; font-weight: 700; letter-spacing: -.01em">{{cur.name}}</div>
+  </div>
+
+  <!-- Snackbar dei pasti dettati -->
+  <sc-if value="{{showSnack}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 104px; z-index: 300; min-height: 56px; box-sizing: border-box; padding: 8px 8px 8px 18px; border-radius: 18px; background: {{c.snack}}; color: {{c.snackText}}; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px {{c.shadow}}">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.snackText}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+      <div style="flex: 1; font-size: 15px; font-weight: 500">3 pasti registrati a voce</div>
+      <button onClick="{{closeSnack}}" style="all: unset; cursor: pointer; height: 44px; padding: 0 14px; border-radius: 12px; font-size: 15px; font-weight: 700; color: {{c.snackAction}}; display: flex; align-items: center">Revisiona</button>
+    </div>
+  </sc-if>
+
+  <!-- Pillola di navigazione -->
+  <nav aria-label="Navigazione" style="position: absolute; left: 50%; bottom: 24px; z-index: 300; transform: translateX(-50%); height: 64px; box-sizing: border-box; padding: 6px 8px; border-radius: 32px; background: {{c.pill}}; box-shadow: inset 0 0 0 1px {{c.pillRing}}, 0 8px 28px {{c.shadow}}; display: flex; align-items: center; gap: 2px; opacity: {{uiOpacity}}; transition: opacity 260ms">
+    <a href="#" style="width: 76px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 8c0-2 2-2 2-4M13 8c0-2 2-2 2-4"></path></svg>
+      Pasti
+    </a>
+    <a href="#" style="width: 76px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>
+      Diario
+    </a>
+    <a href="#" style="width: 76px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"></path><circle cx="12" cy="12.5" r="3.5"></circle></svg>
+      Scansiona
+    </a>
+    <div style="width: 1px; height: 28px; background: {{c.pillRing}}; margin: 0 6px"></div>
+    <a href="#" aria-label="Profilo e impostazioni" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; background: {{c.avatar}}; color: {{c.avatarText}}; font-size: 17px; font-weight: 700">G</a>
+  </nav>
+
+  <!-- Overlay della registrazione: il pasto sale, poi diventa la spunta -->
+  <sc-if value="{{showOverlay}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 400">
+      <button onClick="{{closeOverlay}}" aria-label="Chiudi e torna alla home" style="all: unset; cursor: pointer; position: absolute; inset: 0; display: block"></button>
+
+      <div style="pointer-events: none; position: absolute; left: 195px; top: {{meal.y}}px; width: 170px; height: 130px; transform: translate(-50%, -100%) scale({{meal.s}}); transform-origin: 50% 100%; opacity: {{meal.o}}; transition: top 620ms cubic-bezier(.2,.9,.25,1), transform 620ms cubic-bezier(.2,.9,.25,1), opacity 320ms">
+        <sc-if value="{{cur.isPasta}}" hint-placeholder-val="{{ true }}">
+          <svg viewBox="0 0 170 130" width="170" height="130" aria-hidden="true">
+            <path d="M13 96a72 20 0 0 0 144 0v6a72 20 0 0 1-144 0z" fill="url(#ceramicaLato)"></path>
+            <ellipse cx="85" cy="96" rx="72" ry="20" fill="url(#ceramica)"></ellipse>
+            <ellipse cx="85" cy="97" rx="54" ry="13" fill="url(#pozzo)"></ellipse>
+            <path d="M38 96c-2-28 20-48 47-48s49 20 47 48c-14 8-80 8-94 0z" fill="#F0B347"></path>
+            <path d="M38 96c-2-28 20-48 47-48s49 20 47 48c-14 8-80 8-94 0z" fill="url(#luce)"></path>
+            <path d="M46 90c6-18 26-26 42-16M54 98c12-14 36-18 58-4M44 80c14-22 48-26 70-4M64 66c12-8 30-6 38 4" fill="none" stroke="#C9821F" stroke-width="3.6" stroke-linecap="round"></path>
+            <path d="M56 72c0-16 13-24 29-24s29 8 29 24c-8 7-50 7-58 0z" fill="#D63A22"></path>
+            <path d="M56 72c0-16 13-24 29-24s29 8 29 24c-8 7-50 7-58 0z" fill="url(#luce)"></path>
+            <ellipse cx="73" cy="57" rx="9" ry="3.6" fill="#fff" opacity=".8" transform="rotate(-16 73 57)"></ellipse>
+            <path d="M88 50c7-10 19-10 25-5-5 8-15 10-25 5z" fill="#3E9A4C"></path>
+            <path d="M86 52c-3-9 1-16 8-19 3 7 0 14-8 19z" fill="#2F8240"></path>
+          </svg>
+        </sc-if>
+        <sc-if value="{{cur.isBowl}}" hint-placeholder-val="{{ false }}">
+          <svg viewBox="0 0 170 130" width="170" height="130" aria-hidden="true">
+            <path d="M25 64h120c0 32-26 50-60 50S25 96 25 64z" fill="{{cur.f1}}"></path>
+            <path d="M25 64h120c0 32-26 50-60 50S25 96 25 64z" fill="url(#corpo)"></path>
+            <ellipse cx="85" cy="64" rx="60" ry="17" fill="{{cur.f1d}}"></ellipse>
+            <path d="M31 64c4-22 26-34 54-34s50 12 54 34c-10 9-98 9-108 0z" fill="{{cur.f2}}"></path>
+            <path d="M31 64c4-22 26-34 54-34s50 12 54 34c-10 9-98 9-108 0z" fill="url(#luce)"></path>
+            <ellipse cx="62" cy="52" rx="13" ry="9" fill="{{cur.f3}}"></ellipse><ellipse cx="62" cy="52" rx="13" ry="9" fill="url(#luce)"></ellipse>
+            <ellipse cx="102" cy="50" rx="11" ry="8" fill="{{cur.f4}}"></ellipse><ellipse cx="102" cy="50" rx="11" ry="8" fill="url(#luce)"></ellipse>
+            <ellipse cx="84" cy="41" rx="10" ry="8" fill="{{cur.f3}}"></ellipse><ellipse cx="84" cy="41" rx="10" ry="8" fill="url(#luce)"></ellipse>
+          </svg>
+        </sc-if>
+      </div>
+
+      <div style="pointer-events: none; position: absolute; left: 135px; top: 270px; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #5FD38D, {{c.green}} 70%); box-shadow: 0 16px 36px rgba(31,138,87,.35); display: flex; align-items: center; justify-content: center; opacity: {{check.o}}; transform: scale({{check.s}}); transition: opacity 360ms, transform 480ms cubic-bezier(.3,1.5,.5,1)">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+      </div>
+
+      <div style="pointer-events: none; position: absolute; left: 24px; right: 24px; top: 414px; text-align: center; opacity: {{textOpacity}}; transition: opacity 300ms">
+        <div style="font-size: 26px; font-weight: 700; letter-spacing: -.01em">{{cur.name}}</div>
+        <div style="margin-top: 6px; font-size: 16px; color: {{c.muted}}">{{sottotitolo}}</div>
+      </div>
+
+      <div style="pointer-events: none; position: absolute; left: 131px; top: 262px; width: 128px; height: 160px; opacity: {{flame.o}}; transform: scale({{flame.s}}); transform-origin: 50% 80%; transition: opacity 420ms, transform 560ms cubic-bezier(.3,1.4,.5,1)">
+        <svg viewBox="0 0 74 92" width="128" height="160" aria-hidden="true">
+          <defs><linearGradient id="fiamma" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F2613F"></stop><stop offset="1" stop-color="#FFC15A"></stop></linearGradient></defs>
+          <path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="url(#fiamma)"></path>
+          <path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="url(#luce)"></path>
+        </svg>
+        <div style="position: absolute; left: 0; right: 0; top: 80px; text-align: center; font-size: 44px; font-weight: 800; color: #fff">{{serie}}</div>
+      </div>
+
+      <div style="pointer-events: none; position: absolute; left: 32px; right: 32px; top: 446px; text-align: center; opacity: {{flame.o}}; transition: opacity 360ms">
+        <div style="font-size: 24px; font-weight: 700; line-height: 1.3; text-wrap: balance">{{frase}}</div>
+      </div>
+
+      <div style="pointer-events: none; position: absolute; left: 0; right: 0; top: 506px; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: {{facesOpacity}}; transform: translateY({{facesShift}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+        <div style="font-size: 15px; font-weight: 600; color: {{c.muted}}">Come ti senti dopo il pasto?</div>
+        <div role="group" aria-label="Come ti senti dopo il pasto" style="pointer-events: {{facesPointer}}; display: flex; gap: 22px; align-items: flex-end">
+          <button onClick="{{f0.pick}}" aria-label="Non mi è piaciuto" style="all: unset; cursor: pointer; position: relative; width: 72px; height: 72px; opacity: {{f0.o}}; transform: scale({{f0.s}}) rotate(-6deg); transition: transform 360ms cubic-bezier(.3,1.6,.5,1), opacity 240ms">
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
+              <path d="M36 6c18 0 31 12 31 30 0 17-13 30-31 30S5 54 6 37C6 18 18 6 36 6z" fill="#F25555"></path>
+              <path d="M36 6c18 0 31 12 31 30 0 17-13 30-31 30S5 54 6 37C6 18 18 6 36 6z" fill="url(#luce)"></path>
+              <path d="M20 27l10 3M52 27l-10 3" stroke="#4A0B0E" stroke-width="3" stroke-linecap="round"></path>
+              <ellipse cx="27" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse><ellipse cx="45" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse>
+              <circle cx="28.2" cy="35.4" r="1.2" fill="#fff"></circle><circle cx="46.2" cy="35.4" r="1.2" fill="#fff"></circle>
+              <path d="M26 53c5-6 15-6 20 0" fill="none" stroke="#4A0B0E" stroke-width="3.2" stroke-linecap="round"></path>
+            </svg>
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" style="position: absolute; left: 0; top: 0; opacity: {{f0.sp}}; transform: scale({{f0.sps}}); transition: opacity 300ms, transform 420ms cubic-bezier(.3,1.6,.5,1)">
+              <path d="M8 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFC94A"></path><path d="M64 14l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#F25555"></path><circle cx="66" cy="58" r="2.5" fill="#FFC94A"></circle>
+            </svg>
+          </button>
+          <button onClick="{{f1.pick}}" aria-label="Così così" style="all: unset; cursor: pointer; position: relative; width: 72px; height: 72px; opacity: {{f1.o}}; transform: scale({{f1.s}}); transition: transform 360ms cubic-bezier(.3,1.6,.5,1), opacity 240ms">
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
+              <path d="M36 5c19 0 32 13 31 31 0 18-14 31-31 31S5 54 5 36 17 5 36 5z" fill="#FFCF3F"></path>
+              <path d="M36 5c19 0 32 13 31 31 0 18-14 31-31 31S5 54 5 36 17 5 36 5z" fill="url(#luce)"></path>
+              <ellipse cx="27" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse><ellipse cx="45" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse>
+              <circle cx="28.2" cy="33.4" r="1.2" fill="#fff"></circle><circle cx="46.2" cy="33.4" r="1.2" fill="#fff"></circle>
+              <path d="M26 50h20" stroke="#4F3500" stroke-width="3.2" stroke-linecap="round"></path>
+            </svg>
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" style="position: absolute; left: 0; top: 0; opacity: {{f1.sp}}; transform: scale({{f1.sps}}); transition: opacity 300ms, transform 420ms cubic-bezier(.3,1.6,.5,1)">
+              <path d="M8 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFCF3F"></path><path d="M64 14l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#FF9A3D"></path><circle cx="66" cy="58" r="2.5" fill="#FFCF3F"></circle>
+            </svg>
+          </button>
+          <button onClick="{{f2.pick}}" aria-label="Mi è piaciuto" style="all: unset; cursor: pointer; position: relative; width: 72px; height: 72px; opacity: {{f2.o}}; transform: scale({{f2.s}}) rotate(6deg); transition: transform 360ms cubic-bezier(.3,1.6,.5,1), opacity 240ms">
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
+              <path d="M37 5c18 1 31 14 30 32-1 17-14 30-31 30S5 53 5 36C6 18 19 4 37 5z" fill="#3FC47A"></path>
+              <path d="M37 5c18 1 31 14 30 32-1 17-14 30-31 30S5 53 5 36C6 18 19 4 37 5z" fill="url(#luce)"></path>
+              <path d="M21 35c2-5 9-5 11 0M40 35c2-5 9-5 11 0" fill="none" stroke="#0A3D22" stroke-width="3.2" stroke-linecap="round"></path>
+              <path d="M22 44c2 12 26 12 28 0z" fill="#0A3D22"></path>
+              <path d="M29 51c3-3 11-3 14 0-3 4-11 4-14 0z" fill="#FF7B8A"></path>
+              <ellipse cx="16" cy="44" rx="5" ry="3" fill="#B8F5CF" opacity=".7"></ellipse><ellipse cx="56" cy="44" rx="5" ry="3" fill="#B8F5CF" opacity=".7"></ellipse>
+            </svg>
+            <svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true" style="position: absolute; left: 0; top: 0; opacity: {{f2.sp}}; transform: scale({{f2.sps}}); transition: opacity 300ms, transform 420ms cubic-bezier(.3,1.6,.5,1)">
+              <path d="M8 8l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFC94A"></path><path d="M64 14l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#3FC47A"></path><circle cx="66" cy="58" r="2.5" fill="#FFC94A"></circle><circle cx="5" cy="56" r="2" fill="#3FC47A"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scuro":{"editor":"boolean","default":false},"stato":{"editor":"enum","options":["home","aggiungi","fiamma","registrato","snackbar","errore"],"default":"home"},"primoDelGiorno":{"editor":"boolean","default":true},"alternative":{"editor":"enum","options":["3","5","7"],"default":"3"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const stato = props.stato ?? 'home';
+    const sel = stato === 'aggiungi' ? 0 : 1;
+    this.state = {
+      sel,
+      rot: -(sel - 1),
+      fase: stato === 'registrato' ? 'faccine' : (stato === 'fiamma' ? 'fiamma' : 'home'),
+      snack: stato === 'snackbar',
+      face: -1,
+      kb: 0
+    };
+    this.timers = [];
+  }
+  // Zoom lento della scena nella finestra: va e torna fra due inquadrature
+  componentDidMount() {
+    this.later(60, () => this.setState({ kb: 1 }));
+    this.kbTimer = setInterval(() => this.setState({ kb: this.state.kb === 1 ? 0 : 1 }), 16000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.kbTimer);
+    this.timers.forEach(clearTimeout);
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+  later(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+
+  meals() {
+    return [
+      { name: 'Pasta al pomodoro', qty: '320 g', kind: 'pasta', why: 'Niente pasta da cinque giorni' },
+      { name: 'Insalata di farro', qty: '280 g', why: 'Il martedì di solito mangi leggero', kind: 'bowl', f1: '#3F8FC9', f1d: '#8EC3EA', f2: '#D9AE6A', f3: '#E2412B', f4: '#5DB35B', f5: '#F7E4A6' },
+      { name: 'Riso cantonese', qty: '350 g', why: 'Non lo mangi da due settimane', kind: 'bowl', f1: '#1F4E86', f1d: '#4F82BE', f2: '#F8EFD8', f3: '#F5C531', f4: '#6FB54A', f5: '#EE7F5A' },
+      { name: 'Yogurt e frutti di bosco', qty: '200 g', why: "L'ultima volta ti è piaciuto", kind: 'bowl', f1: '#E58E6E', f1d: '#F6C2AC', f2: '#FDF9F2', f3: '#6A2F93', f4: '#D8243F', f5: '#2F49A8' },
+      { name: 'Zuppa di legumi', qty: '300 g', why: 'Legumi solo una volta questa settimana', kind: 'bowl', f1: '#B5532B', f1d: '#DC8A62', f2: '#D99A45', f3: '#7E4A2A', f4: '#F3CF65', f5: '#4E8C42' },
+      { name: 'Salmone e patate', qty: '330 g', why: 'Niente pesce da sei giorni', kind: 'bowl', f1: '#4E8F7B', f1d: '#93C7B6', f2: '#F8F2E6', f3: '#F27A55', f4: '#EBC152', f5: '#4F9A4C' },
+      { name: 'Toast e spremuta', qty: '180 g', why: 'Veloce, se oggi vai di fretta', kind: 'bowl', f1: '#E08A2B', f1d: '#F5B669', f2: '#E6AE5E', f3: '#F38A1F', f4: '#F8E092', f5: '#B9732F' }
+    ];
+  }
+
+  // Anima la rotazione lungo l'ellisse: rot è in "posti", non in gradi
+  rotateTo(i, max) {
+    const sel = Math.max(0, Math.min(max, i));
+    if (sel === this.state.sel) return;
+    const from = this.state.rot, to = -(sel - 1), t0 = performance.now(), dur = 600;
+    this.setState({ sel });
+    if (this.raf) cancelAnimationFrame(this.raf);
+    const tick = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      this.setState({ rot: from + (to - from) * e });
+      if (k < 1) this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+
+  register() {
+    if (this.state.sel === 0 || this.state.fase !== 'home') return;
+    this.setState({ fase: 'volo', face: -1 });
+    this.later(40, () => this.setState({ fase: 'su' }));
+    // La fiammella compare solo al primo pasto del giorno, prima della spunta
+    const primo = this.props.primoDelGiorno ?? true;
+    const t = primo ? 3200 : 760;
+    if (primo) this.later(760, () => this.setState({ fase: 'fiamma' }));
+    this.later(t, () => this.setState({ fase: 'spunta' }));
+    this.later(t + 900, () => this.setState({ fase: 'faccine' }));
+  }
+
+  renderVals() {
+    const dark = this.props.scuro ?? false;
+    const n = parseInt(this.props.alternative ?? '3', 10);
+    const c = dark ? {
+      bg: '#151515', text: '#EDECE8', muted: '#A6A49E',
+      topIn: '#33322F', topOut: '#1E1E1C', band: '#141413', bandSide: '#0A0A09', rimLight: 'rgba(255,255,255,.10)', groove: 'rgba(255,255,255,.05)', gloss: '.10', floor: '0.7',
+      contact: '0.5', plusBg: '#3A3936', plusInk: '#EDECE8', shadow: 'rgba(0,0,0,.45)',
+      chip: '#222220', chipRing: '#31302D', pill: '#222220', pillRing: '#32312E',
+      avatar: '#E9C9A8', avatarText: '#3A2614', green: '#1F8A57',
+      snack: '#EDECE8', snackText: '#151515', snackAction: '#2F57C4',
+      errBg: '#3A1D1A', errRing: '#5A2A25', errText: '#FFD9D3', errDot: '#D9493A',
+      wallGlow: 'rgba(255,214,160,.10)', edge: 'rgba(0,0,0,.55)', edgeSide: 'rgba(0,0,0,.35)', edgeLine: 'rgba(255,255,255,.06)'
+    } : {
+      bg: '#FCFCFB', text: '#151515', muted: '#5E5C57',
+      topIn: '#E9E9E7', topOut: '#D2D2CF', band: '#C4C4C0', bandSide: '#A9A9A5', rimLight: 'rgba(255,255,255,.5)', groove: 'rgba(21,21,21,.06)', gloss: '.45', floor: '0.18',
+      contact: '0.28', plusBg: '#EFEBE4', plusInk: '#151515', shadow: 'rgba(21,21,21,.08)',
+      chip: '#F3F1EC', chipRing: '#E6E2DA', pill: '#FFFFFF', pillRing: '#E7E4DE',
+      avatar: '#3A2614', avatarText: '#F6E7D6', green: '#1F8A57',
+      snack: '#2B2A28', snackText: '#F4F3EF', snackAction: '#A9C2FF',
+      errBg: '#FDECEA', errRing: '#F6C9C3', errText: '#7A1E14', errDot: '#C8382A',
+      wallGlow: 'rgba(255,214,160,.35)', edge: 'rgba(60,40,20,.30)', edgeSide: 'rgba(60,40,20,.18)', edgeLine: 'rgba(21,21,21,.06)'
+    };
+
+    const list = [{ name: 'Nuovo pasto', kind: 'plus' }].concat(this.meals().slice(0, n + 1));
+    const max = list.length - 1;
+    const sel = Math.min(this.state.sel, max);
+    const step = Math.min(60, 360 / list.length) * Math.PI / 180;
+    const rot = this.state.rot;
+    // Posti sul bordo del piano: davanti in basso al centro, ai lati più in alto, più piccoli e sbiaditi
+    const items = list.map((m, i) => {
+      const a = (i - 1 + rot) * step;
+      const k = (Math.cos(a) + 1) / 2;
+      return {
+        ...m,
+        x: 195 + 220 * Math.sin(a),
+        y: 564 + 64 * Math.cos(a),
+        s: 0.5 + 0.75 * k * k * k,
+        o: 0.04 + 0.96 * Math.pow(k, 4),
+        sat: 0.35 + 0.65 * Math.pow(k, 4),
+        z: Math.round(k * 100) + 10,
+        isPlus: m.kind === 'plus', isPasta: m.kind === 'pasta', isBowl: m.kind === 'bowl',
+        label: i === 0 ? 'Salva un pasto nuovo' : (i === sel ? 'Registra ' + m.name : 'Mostra ' + m.name),
+        pick: () => {
+          if (this._swiped) { this._swiped = false; return; }
+          if (i === sel) { if (i > 0) this.register(); }
+          else this.rotateTo(i, max);
+        }
+      };
+    });
+    const cur = items[sel];
+
+    const now = new Date();
+    const ora = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    const fase = this.state.fase;
+    const overlay = fase !== 'home';
+    const up = fase === 'su';
+    const done = fase === 'spunta' || fase === 'faccine';
+    const serie = 12;
+    const h = now.getHours() + now.getMinutes() / 60;
+    const momento = h < 10.5 ? 'Colazione' : (h < 15 ? 'Pranzo' : (h < 18.5 ? 'Merenda' : 'Cena'));
+    const errore = (this.props.stato ?? 'home') === 'errore';
+
+    const face = (i) => {
+      const chosen = this.state.face === i, other = this.state.face >= 0 && !chosen;
+      return {
+        s: chosen ? 1.18 : 1, o: other ? 0.45 : 1,
+        sp: chosen ? 1 : 0, sps: chosen ? 1.12 : 0.6,
+        pick: () => this.setState({ face: i })
+      };
+    };
+
+    return {
+      c, items, cur, ora, serie,
+      f0: face(0), f1: face(1), f2: face(2),
+      showChips: sel > 0,
+      showSnack: this.state.snack && !overlay,
+      showOverlay: overlay,
+      uiOpacity: overlay ? 0 : 1,
+      meal: fase === 'volo' ? { y: 628, s: 1.25, o: 1 } : (up ? { y: 427, s: 1.5, o: 1 } : { y: 427, s: 1.35, o: 0 }),
+      check: done ? { o: 1, s: 1 } : { o: 0, s: 0.6 },
+      flame: fase === 'fiamma' ? { o: 1, s: 1 } : { o: 0, s: 0.7 },
+      frase: serie + ' giorni di fila: continua così!',
+      textOpacity: done ? 1 : 0,
+      sottotitolo: 'Registrato alle ' + ora,
+      facesOpacity: fase === 'faccine' ? 1 : 0,
+      facesShift: fase === 'faccine' ? 0 : 16,
+      facesPointer: fase === 'faccine' ? 'auto' : 'none',
+      momento,
+      // Con un errore la finestra resta vuota, tinta di rosso tenue: la vista sparisce per dare evidenza al problema
+      sceneOpacity: errore ? 0 : 1,
+      winBg: errore ? (dark ? '#2B1917' : '#F4DEDA') : '#CFE6F5',
+      kb: this.state.kb === 1 ? { s: 1.14, x: 14, y: -10 } : { s: 1.04, x: -12, y: 6 },
+      showReason: !errore && sel > 0,
+      showError: errore,
+      closeOverlay: () => { this.timers.forEach(clearTimeout); this.setState({ fase: 'home' }); },
+      closeSnack: () => this.setState({ snack: false }),
+      down: (e) => { this._x = e.clientX; this._y = e.clientY; this._swiped = false; },
+      up: (e) => {
+        if (this._x == null) return;
+        const dx = e.clientX - this._x, dy = e.clientY - this._y;
+        this._x = null;
+        if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy)) {
+          this._swiped = true;
+          this.rotateTo(sel + (dx < 0 ? 1 : -1), max);
+        } else if (dy < -50 && Math.abs(dy) > Math.abs(dx)) {
+          this._swiped = true;
+          if (sel > 0) this.register();
+        }
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

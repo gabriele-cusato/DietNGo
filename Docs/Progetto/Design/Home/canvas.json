@@ -1,0 +1,98 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Aggiungi.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Piatto girato sul +",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "HomeScura.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Home scura",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Home chiara, consigliato",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Registrato.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Registrato: poi spunta e faccine",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Snackbar.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Pasti dettati: Snackbar",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "Fiammella.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Registrato: prima la fiammella",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Errore.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 36,
+      "title": "Errore dei pasti dettati",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-18T10:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "titolo": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Home: piatto girevole",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "HomeScura.dc.html",
+    "Aggiungi.dc.html",
+    "Fiammella.dc.html",
+    "Registrato.dc.html",
+    "Snackbar.dc.html",
+    "Errore.dc.html"
+  ],
+  "pages": [],
+  "title": "DietNGo Home"
+}

@@ -19,3 +19,94 @@ Scelte che valgono oltre la singola tappa: una riga per scelta, con la data.
 - 2026-10-11 | Modalità: a moduli. Si cambia se non si rivela quella giusta.
 - 2026-10-11 | Version control: git. La repo l'ha creata l'utente il 2026-10-11, e i commit li fa lui.
 - 2026-10-11 | Dispositivi di prova: telefono vero collegato via cavo, orologio emulato.
+- 2026-10-12 | Warning: per ora restano dove sono. Si risolvono tutti insieme più avanti, su richiesta dell'utente.
+- 2026-10-12 | Il progetto dell'app si scrive in un file nuovo, non nel file `IdeaIniziale.md`. Descrive l'esperienza d'uso, non solo le funzioni, e si chiude quando tutti i buchi sono riempiti.
+- 2026-10-14 | Obiettivo dell'app: tracciare i pasti in modo semplice e rapido, così da entrare nella routine senza far perdere tempo. Si usa dal telefono, dall'orologio o da tutti e due, come preferisce l'utente: il telefono da solo deve bastare.
+- 2026-10-14 | Principio grafico: un'immagine, un'icona, un'illustrazione o un'animazione messa nel posto e nel momento giusto vale più di mille parole. L'app è essenziale nelle funzioni e ricca in animazioni e illustrazioni: ogni schermata ha «un'anima» che la rende riconoscibile, non solo utilità.
+- 2026-10-14 | Principio di esperienza d'uso: si seguono le regole di UX design. Forme morbide e arrotondate, pulsanti nel posto giusto, gesture e comandi vocali dove servono, meno elementi possibili, niente ridondanza né confusione.
+- 2026-10-14 | Stile grafico: quello di Google del sistema operativo, su telefono e orologio, perché l'app sembri parte del sistema e non un corpo esterno.
+- 2026-10-14 | Registrazione del pasto: con poche informazioni, anche solo cosa e quanto, oppure complete, con valori nutrizionali, codice a barre o ricerca di un prodotto già noto. Le informazioni in più sono sempre facoltative.
+- 2026-10-14 | Registrazione rapida: con un tocco, oppure a voce con Gemini senza aprire l'app, anche a schermo spento, sia sull'orologio sia sul telefono.
+- 2026-10-14 | Perché l'utente usa l'app: l'app non è essenziale, quindi la si usa solo se non ruba tempo ed è piacevole da vedere. Immediatezza e piacevolezza vengono prima di tutto.
+- 2026-10-14 | Azione principale: registrare un pasto salvato. Un pasto è un insieme di alimenti e bevande, composto una volta e poi registrato al volo; si possono anche salvare pasti di una cosa sola. Ogni altra azione è secondaria e si mostra e si posiziona di conseguenza.
+- 2026-10-14 | Home essenziale: mostra ciò che serve più spesso; il resto si raggiunge con qualche tocco o navigazione.
+- 2026-10-14 | Elementi solo informativi, come la serie di giorni registrati, sono effimeri: un'animazione di pochi secondi che sparisce da sola, mai un elemento fisso.
+- 2026-10-14 | Ogni pagina ha un suo stile e un suo modo di rappresentare le cose. Pagine con contenuti simili possono somigliarsi, ma non essere identiche.
+- 2026-10-14 | Disposizione: si può reinventare una disposizione standard, purché non peggiori l'uso. Claude propone anche soluzioni creative, non solo quelle standard.
+- 2026-10-14 | Varietà: l'app spinge a variare i pasti, mai a ripetere. Niente funzione «come ieri». Il pasto consigliato tiene conto di ora, giorno della settimana e varietà.
+- 2026-10-14 | Orari dei pasti a spanne: «più o meno alle 8», con una finestra intorno, non un'ora esatta.
+- 2026-10-14 | Benvenuto: pochissime parole, pulsanti grandi, belle illustrazioni, «Salta» sempre evidente che porta subito all'app.
+- 2026-10-14 | Pasti dettati: si importano da soli da Google Tasks. L'app controlla anche i pasti presenti in Google Tasks ma non registrati, li segnala, e con «Registra» l'utente allinea la situazione.
+- 2026-10-14 | Esclusi per ora: complicazione sul quadrante, widget, pulsante nelle Impostazioni rapide, funzione «come ieri», lista della spesa.
+- 2026-10-14 | Cancellazione dell'account: in fondo a tutto.
+- 2026-10-14 | Database dei prodotti per codice a barre: prima di adottarne uno si cercano e si valutano le alternative, e lo si prova.
+- 2026-10-14 | Ordine del progetto dell'app: prima si chiude il flusso del telefono. Poi si ricava quello dell'orologio, il più semplice possibile, separando ciò che va fatto per forza sul telefono da ciò che l'orologio fa da solo.
+- 2026-10-15 | Stile a due voci: la base è professionale ma stravagante, con forme non convenzionali e posizionamento fuori dallo standard; le illustrazioni sono giocose e colorate. I due stili convivono nella stessa app, come nero e giallo.
+- 2026-10-15 | Un effetto o un'animazione entra solo se ha un senso nel contesto: un effetto messo per decorare sembra forzato e si scarta.
+- 2026-10-15 | Ordine delle azioni: prima registrare un pasto mangiato, poi comporre un pasto, poco meno importante; modificare un pasto è meno importante.
+- 2026-10-15 | Ogni soluzione deve reggere con tanti pasti salvati: uno scorrimento uno alla volta basta solo con pochi pasti.
+- 2026-10-15 | L'app non deve spingere a essere aperta spesso. Per questo niente registrazione dell'acqua.
+- 2026-10-15 | Niente utente ospite e niente «Continua senza account»: l'accesso è obbligatorio. «Salta» salta solo il benvenuto.
+- 2026-10-15 | Pasto: ha un nome scelto dall'utente e un'illustrazione scelta dall'utente. Le quantità sono in grammi o pezzi, niente poco, normale o tanto.
+- 2026-10-15 | Valutazione del giorno: con i valori nutrizionali si usano quelli; senza, si cerca nel database un piatto simile al nome del pasto e se ne prendono i valori; se non somiglia a niente, il giorno resta grigio senza valutazione.
+- 2026-10-15 | Foto del piatto: non per forza con Gemini. Le foto si fanno ad app aperta, quindi va bene una libreria specializzata nel riconoscimento del cibo, da cercare e valutare.
+- 2026-10-15 | Bocciati: la tavola con piatto, posate, segnaposto e bicchiere; le faccine per le sensazioni; gli ingredienti che si girano nell'accesso; gli alimenti che cadono nel piatto. Restano la fiammella, l'orario a spanne e il punteggio del pasto consigliato.
+- 2026-10-15 | Design: le proposte grafiche si verificano con il tipo di Artifact «Design», una pagina alla volta, a partire dalla home.
+- 2026-10-16 | La direzione grafica scelta per la home diventa quella di tutta l'app; ogni pagina e funzione ha poi una sua anima dentro quella direzione. Per la home si propongono cinque idee, l'utente ne sceglie una o due da disegnare.
+- 2026-10-16 | Ogni idea grafica ha un perché vero sotto: un legame chiaro con il mangiare o con il registrare un pasto. Una metafora che non c'entra, o messa lì per fare effetto, si scarta.
+- 2026-10-16 | Immediatezza: l'utente capisce come funziona una schermata appena la vede. Un principio da imparare, come «bolla più grande vuol dire più adatto», non va bene.
+- 2026-10-16 | Cornice stabile: ogni volta che si entra la disposizione e il contorno sono gli stessi, un territorio franco; cambiano solo i contenuti, come il pasto consigliato.
+- 2026-10-16 | Bocciate per la home: il quadrante ad anello, le bolle, il menù da rivista, il cielo della giornata, il mazzo di carte. La linea della giornata non convince del tutto.
+- 2026-10-16 | Atmosfera dell'app: forme morbide, sinuose e fluide, un design astratto ma con un perché. Niente oggetti concreti e banali come quaderno, penna o scontrino: ancorano l'immaginazione.
+- 2026-10-16 | Bocciate anche: l'agenda con matita e penna, lo scontrino, la chat, il distributore automatico. Il frigorifero è carino ma non ha l'atmosfera giusta.
+- 2026-10-16 | Le proposte grafiche si fanno con approcci diversi fra loro, non tutte sullo stesso filo, per trovare prima la strada giusta.
+- 2026-10-16 | Le illustrazioni saranno giocose e scherzose: il tono della base non deve stonare con loro.
+- 2026-10-16 | Bocciate anche la goccia, mangiare a colori, l'impronta del pasto, gli strati e la parola.
+- 2026-10-16 | Le proposte per una pagina si danno prima solo come cornice fissa, in poche righe: l'utente giudica la cornice e solo dopo il resto.
+- 2026-10-17 | Riferimenti per la home: la cornice «un solo protagonista» ispira; di How We Feel, Lifesum, Rise e Oura piace qualche elemento. Endel, Lumy e le app troppo poco astratte non convincono.
+- 2026-10-17 | Home: contiene solo l'azione principale e i collegamenti alle altre pagine. Niente punteggio del pasto consigliato, che resta dentro l'algoritmo; niente orario del prossimo pasto, che sta nelle impostazioni; niente pasti già registrati oggi.
+- 2026-10-17 | Home, confermati: registrare con un tocco il pasto consigliato, scegliere un'alternativa, cercare fra i pasti salvati, allineare i pasti di Google Tasks con «Registra», annullare la registrazione appena fatta, conferma con animazione e vibrazione. Collegamenti confermati: comporre un pasto, modificare un pasto, bollino utente. Il diario è in dubbio.
+- 2026-10-17 | Home: tenere premuto il pasto consigliato apre la modifica di ora e quantità prima di registrarlo. La ricerca è solo scritta, non a voce.
+- 2026-10-17 | Cambiare l'ora di un pasto già registrato non si fa dalla home: si fa dove si vedono i pasti registrati del giorno.
+- 2026-10-17 | Digiuno intermittente bocciato: tolto dal progetto.
+- 2026-10-18 | Sensazioni dopo il pasto: tre faccine animate, nello stesso overlay della spunta verde e della fiammella. Sostituisce la bocciatura delle faccine del 2026-10-15.
+- 2026-10-18 | Pasti dettati: l'app li registra da sola e li toglie da Google Tasks. Se la registrazione o la cancellazione da Google Tasks falliscono, una notifica chiede di aprire l'app per un controllo; le registrazioni successive aspettano in coda. Sostituisce il «Registra» manuale del 2026-10-14 e del 2026-10-17. Il meccanismo che sveglia l'app è da decidere.
+- 2026-10-18 | Dopo i pasti dettati: una Snackbar «N pasti registrati a voce» con «Revisiona», oppure il riepilogo diretto, se così nelle impostazioni. Dal riepilogo si annulla: è l'unico annullamento nella home.
+- 2026-10-18 | Messaggi in basso: Snackbar con coda, uno dopo l'altro; sparisce dopo circa 5 secondi o trascinandola via. La coda si svuota al logout e in altri casi da decidere.
+- 2026-10-18 | Home: niente ricerca, che va nella pagina dei pasti salvati; niente annullamento, che va nella pagina delle registrazioni, tranne quello dei pasti dettati.
+- 2026-10-18 | Colori: sfondi fissi #151515 nel tema scuro e #FCFCFB nel tema chiaro, tema scelto dal sistema, colori morbidi. Lo stile di Google vale per gli elementi riconoscibili dell'interfaccia. Gli accenti presi dal sistema si provano.
+- 2026-10-18 | Home: un piatto girevole con vassoi, un po' sotto il centro dello schermo. Il primo vassoio è il consigliato; nella direzione scelta nelle impostazioni seguono le alternative, al massimo N (3, 5 o 7, predefinito 3), ordinate per punteggio nascosto. Nella direzione opposta c'è il «+» per salvare un pasto nuovo. L'illustrazione è appoggiata al vassoio, come un oggetto unico, con il titolo sotto.
+- 2026-10-18 | Registrare dalla home: con un tocco l'animazione parte da sola; trascinando verso l'alto la guida il dito, se si fa in modo affidabile, altrimenti restano tocco, scorrimento orizzontale e al massimo pressione lunga. Il pasto vola al centro e il resto sparisce; poi spunta verde nel bollino verde con un sottotitolo, poi la fiammella con il numero della serie e una frase breve (solo al primo pasto del giorno) e le faccine. L'overlay si chiude da solo dopo pochi secondi o con un tocco. Animazione e vibrazione sempre.
+- 2026-10-18 | Sopra il pasto: due rettangoli con l'ora attuale e la quantità salvata. L'ora si cambia con il selettore nativo di Google, formato 12 o 24 ore nelle impostazioni. La quantità si cambia con il valore e una combo dell'unità, più una spunta per usarla come predefinita. Nelle impostazioni si scelgono la famiglia di unità e l'unità predefinita.
+- 2026-10-18 | Quantità di un pasto composto: l'utente dà il totale, e tutti gli ingredienti si moltiplicano dello stesso fattore. Niente quantità da rimettere una per una.
+- 2026-10-18 | Non si registra un pasto non salvato. Il «+» salva un pasto nuovo, composto o di una cosa sola; registrarlo subito dopo è un'idea per più avanti.
+- 2026-10-18 | Due pagine distinte: pasti salvati (ricerca per nome, preferiti, registrazione con la stessa animazione della home, forse modifica) e registrazioni, cioè il diario (oggi come predefinito, poi settimana e mese, annullamento).
+- 2026-10-18 | Navigazione: tutta in una pillola fluttuante in basso, con pasti salvati, diario e, più a destra, il bollino utente. La parte alta della home resta libera.
+- 2026-10-18 | Pasti con pezzi: ogni pezzo ha un peso dato da noi, così ogni pasto ha un peso totale da moltiplicare.
+- 2026-10-18 | Sensazioni: facoltative, si possono saltare, e si salvano sul singolo pasto registrato.
+- 2026-10-18 | Cambio pagina: un liquido che scorre dall'alto verso il basso con forme ondulate, non a gocce, toglie la pagina vecchia; alla fine la nuova appare in dissolvenza.
+- 2026-10-18 | Strada nativa: ogni soluzione su Android deve avere un corrispettivo ufficiale su iPhone, o un metodo alternativo ufficiale. Niente soluzioni in best effort: se la strada giusta non c'è, si rivaluta la richiesta.
+- 2026-10-18 | Niente controlli continui a intervalli, né sul telefono con WorkManager né sul server ogni minuto.
+- 2026-10-18 | Pasti dettati per ora: si importano da Google Tasks solo all'apertura dell'app. Niente Edge Function, niente WorkManager, niente notifica ad app chiusa. Quando AppFunctions sarà aperta a tutti, la voce passerà direttamente all'app; Google Tasks resta come ripiego.
+- 2026-10-18 | La regola del corrispettivo ufficiale vale solo fra Android e iPhone, non per altri sistemi.
+- 2026-10-18 | Gesto sul piatto: la direzione si decide all'inizio del trascinamento. In orizzontale gira il piatto, verso l'alto solleva il pasto guidato dal dito; non si cambia direzione a metà. Il tocco fa partire l'animazione da sola.
+- 2026-10-18 | Piatto girevole: un piano 3D visto di fronte, non dall'alto, che verso i lati sale e si allontana. I pasti di lato sono più piccoli e sbiaditi e si vedono scorrendo.
+- 2026-10-18 | Registrazione: il pasto sale e poi diventa la spunta verde, con una dissolvenza; la spunta non sta sopra il pasto.
+- 2026-10-18 | Faccine: colorate e con un carattere, non asettiche.
+- 2026-10-18 | Piatto girevole: molto più grande, esce dai bordi laterali dello schermo per dare il senso del 3D.
+- 2026-10-18 | Faccine: rossa per ciò che non piace, gialla in mezzo con bocca dritta e occhi normali, verde che sorride per ciò che piace.
+- 2026-10-18 | Illustrazioni dei pasti: lucide, con luci, ombre e rilievo, belle da vedere; niente disegni piatti.
+- 2026-10-18 | Errori dei pasti dettati: un riquadro in alto, sopra il piatto, che prende il posto di tutto il resto di quella zona e resta finché l'errore non è risolto. Non si mostra insieme ad altre cose.
+- 2026-10-18 | Zona alta della home: piacciono il motivo del consiglio e il momento del pasto («Pranzo»); da decidere insieme alle azioni rapide.
+- 2026-10-18 | Pillola: Pasti, Diario, Scansiona (icona della fotocamera, per foto del piatto e codice a barre) e il bollino utente. Niente tasto per il peso nella home.
+- 2026-10-18 | Zona alta della home: il momento del pasto («Pranzo») e il motivo del consiglio; con un errore, solo il riquadro dell'errore.
+- 2026-10-18 | Dopo la registrazione: prima la fiammella da sola, grande, al posto della spunta, con la frase motivazionale sotto (solo al primo pasto del giorno); dopo qualche secondo la spunta con il titolo sotto, poi le faccine. Fiammella e spunta non si vedono insieme.
+- 2026-10-18 | Dati da raccogliere senza chiedere nulla all'utente: quale pasto sceglie rispetto al consiglio, le correzioni alla quantità, l'ora vera dei pasti, le correzioni alla scansione.
+- 2026-10-18 | Sensazioni: tre stati, male, normale e bene, chiesti dopo il pasto e non al momento della registrazione. Si rispondono anche dalla notifica, con tre pulsanti, senza aprire l'app.
+- 2026-10-18 | Sfondo della home: scene di luoghi accoglienti dove si mangia guardando qualcosa, animate, tre per ogni momento (colazione, pranzo, cena), a rotazione. Supera, per la home, l'atmosfera astratta e la cornice stabile. Gli sfondi fissi #151515 e #FCFCFB restano per le altre pagine.
+- 2026-10-18 | Documentazione: la descrizione della home sta in `Docs/Progetto/Home.md`; il design del canvas è copiato in `Docs/Progetto/Design/Home`.
+- 2026-10-18 | Suggerimenti guidati: l'app incrocia i dati (sensazioni, quantità corrette, scelte, ingredienti) e, dove serve, propone una modifica o fa una domanda con un elemento a comparsa (Snackbar, box), così l'utente aggiusta le cose piano piano e in modo guidato. Esempi: proporre una quantità predefinita diversa, chiedere se cambiare un ingrediente di un pasto che non fa stare bene.
+- 2026-10-18 | Scene animate generate con l'AI: scartate perché instabili e complesse. Si cerca un'alternativa con materiale già pronto.
+- 2026-10-18 | Suggerimenti: niente «Non chiedermelo più» sul singolo suggerimento; si spengono dalle impostazioni. Se il «male» si ripete con lo stesso alimento, l'app propone solo di sostituirlo con qualcosa che ci sta bene: niente diagnosi, niente consigli di andare dal medico, non sono obiettivi dell'app.
+- 2026-10-18 | Sfondo della home: la finestra sul luogo, cioè una grande apertura morbida senza traverse, con dentro una foto sfocata del luogo che si muove piano (zoom lento). Il colore fisso del tema resta intorno. Si valuta dopo l'implementazione.
+- 2026-10-18 | Tema chiaro: il piano girevole è grigio morbido, né bianco (stancava gli occhi) né color pietra (non piaceva). Con un errore la finestra resta vuota, tinta di rosso tenue, senza la vista.

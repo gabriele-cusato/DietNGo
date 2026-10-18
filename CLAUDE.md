@@ -2,7 +2,7 @@
 
 ## Scopo
 
-DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco sull'orologio, oppure a voce tramite Gemini sull'orologio. L'app è autonoma: niente Google Health, niente Health Connect per ora, nessun valore nutrizionale obbligatorio. Il telefono serve a gestire i pasti salvati, a vedere lo storico e a importare da Google Tasks i pasti dettati a voce.
+DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco, oppure a voce tramite Gemini senza aprire l'app, sull'orologio o sul telefono. Un pasto è un insieme di alimenti e bevande che l'utente compone una volta e poi registra al volo. L'app si usa dal telefono, dall'orologio o da tutti e due: il telefono da solo basta, e l'orologio fa le cose più frequenti senza tirare fuori il telefono. L'app è autonoma: niente Google Health, niente Health Connect per ora, nessun valore nutrizionale obbligatorio. Il telefono serve anche a comporre i pasti, a vedere il diario e a importare da Google Tasks i pasti dettati a voce.
 
 ## Linguaggio e framework
 
@@ -17,6 +17,7 @@ DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco s
 - L'utente viene da C#, .NET e Visual Studio: non conosce Kotlin e non ha mai usato Android Studio. Le spiegazioni partono da lì e, quando aiuta, portano il parallelo con C# e .NET.
 - Quando serve una spiegazione, arriva in pillole e nel momento in cui serve: di Kotlin e di ogni tecnologia che l'utente non ha mai usato, come Supabase, si spiega solo ciò che serve al passo in corso, applicato a quello che si sta costruendo in quel passo. Non si spiega tutto prima per poi costruire tutto dopo: la conoscenza arriva un pezzo alla volta, vista all'opera sul lavoro reale.
 - I parallelismi con C# già usati e le correzioni dell'utente stanno nel file `Docs/Info/Spiegazioni/ParallelismiCSharp.md`: ogni spiegazione li riusa e aggiunge lì quelli nuovi.
+- L'Assistente Google è deprecato e sostituito da Gemini: ricerche, proposte e spiegazioni sui comandi vocali parlano solo di Gemini.
 - I commenti del codice si scrivono in italiano.
 - I nomi di classi, metodi, variabili, pacchetti, tabelle e colonne si scrivono in inglese.
 - Le librerie si usano nella versione stabile più recente, verificata online e non a memoria.
