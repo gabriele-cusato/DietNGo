@@ -1,6 +1,6 @@
 # Parallelismi fra Kotlin, Android Studio e il mondo C#
 
-Serve a tenere allineate le spiegazioni: chi spiega riusa i parallelismi di questo file e aggiunge qui quelli nuovi. Aggiornato il 2026-10-11.
+Serve a tenere allineate le spiegazioni: chi spiega riusa i parallelismi di questo file e aggiunge qui quelli nuovi. Aggiornato il 2026-10-19.
 
 «Non contestato» vuol dire che l'utente ha letto il parallelo e non ha obiettato, non che l'argomento sia stato approfondito.
 
@@ -13,8 +13,9 @@ Indicazioni e correzioni date dall'utente:
 - Un paragone con Visual Studio va detto come paragone: «in Visual Studio sarebbe». Alla frase «come un progetto dentro una solution di Visual Studio» l'utente ha risposto che qui usa Android Studio e non Visual Studio.
 - La parola «modulo» per l'utente vuol dire una funzionalità comune riusabile, cioè una libreria nostra. In Gradle vuol dire un progetto dentro la solution, e l'utente lo aveva scambiato per un pacchetto NuGet. Quando si parla del modulo di Gradle va detto per esteso.
 - Una frase con troppi nomi nuovi non passa. La frase «ART crea la classe MainActivity e chiama il suo metodo onCreate» non è stata capita. È servito partire da ciò che l'utente conosce: il `Main` di C# e il `Form_Load` di VB6.
-- I percorsi dei file vanno detti come l'utente li vede. Nella vista «Android» di Android Studio la cartella `src` non compare, e l'utente non la trovava. Ora usa la vista «Project», che mostra le cartelle del disco.
+- I percorsi dei file vanno detti come l'utente li vede. Nella vista «Android» di Android Studio la cartella `src` non compare, e l'utente non la trovava; per un periodo ha usato la vista «Project», che mostra le cartelle del disco. Dal 2026-10-19 preferisce la vista «Android», che per chi comincia si capisce meglio: i percorsi si dicono come lì, per esempio `mobile/kotlin+java/com.gabrielecusato.dietngo/ui.theme`.
 - Le cose scritte nel file `IdeaIniziale.md` non si danno per note: quel file l'ha scritto Claude. Alla frase «la tabella delle registrazioni» l'utente ha risposto che non esiste nessuna tabella.
+- I colori si nominano con i loro file. «Il tema Compose», da solo, all'utente non dice niente: si dice «il file `Theme.kt`», che sceglie i colori chiari o scuri, e «il file `Color.kt`», che li contiene. Il tema XML è quello che Android usa all'avvio.
 - Le spiegazioni arrivano in pillole, su ciò che si sta facendo in quel momento, e molto brevi.
 
 ## Linguaggio: parallelismi usati e non contestati
@@ -33,6 +34,19 @@ Le righe vengono dal file `mobile/src/main/java/com/gabrielecusato/dietngo/MainA
 | `@Composable` | un attributo fra parentesi quadre | segna una funzione che disegna un pezzo di interfaccia |
 | `Meal("riso")` | `new Meal("riso")` | non c'è `new`, e non ci sono i punti e virgola |
 | Kotlin rispetto a Java | VB.NET rispetto a C# | due linguaggi diversi, stesso codice intermedio, stesso runtime, stesse librerie |
+
+## Interfaccia: parallelismi usati
+
+Dati il 2026-10-19 per il punto 1 della home, con le domande dell'utente.
+
+| Kotlin e Compose | In MAUI | Cosa cambia |
+|---|---|---|
+| funzione `@Composable` | pagina o controllo scritto in XAML | l'interfaccia si scrive in Kotlin; la funzione si chiama solo da un'altra `@Composable`, e Compose la ridisegna quando cambiano i dati che legge |
+| cartella `ui.theme`, con `Color.kt`, `Type.kt`, `Theme.kt` | le risorse di stile in `App.xaml` | i colori si leggono con `MaterialTheme.colorScheme` |
+| `isSystemInDarkTheme()` | `AppThemeBinding` | |
+| `Modifier` | gli attributi comuni dei tag XAML: dimensione, `Margin`, `BackgroundColor` | l'ordine conta; le proprietà proprie di un controllo, come il testo, sono parametri della funzione |
+| `@Preview` | l'anteprima XAML di Visual Studio | |
+| `res/values/colors.xml` | nessun parallelo dato | risorse XML lette dal tema XML, separate dai colori di `Color.kt` |
 
 ## Strumenti e compilazione: parallelismi usati e non contestati
 

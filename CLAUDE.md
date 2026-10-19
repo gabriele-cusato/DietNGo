@@ -16,6 +16,7 @@ DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco, 
 
 - L'utente viene da C#, .NET e Visual Studio: non conosce Kotlin e non ha mai usato Android Studio. Le spiegazioni partono da lì e, quando aiuta, portano il parallelo con C# e .NET.
 - Quando serve una spiegazione, arriva in pillole e nel momento in cui serve: di Kotlin e di ogni tecnologia che l'utente non ha mai usato, come Supabase, si spiega solo ciò che serve al passo in corso, applicato a quello che si sta costruendo in quel passo. Non si spiega tutto prima per poi costruire tutto dopo: la conoscenza arriva un pezzo alla volta, vista all'opera sul lavoro reale.
+- Nelle risposte all'utente il modulo `app` si chiama «il progetto dello smartwatch», non «l'orologio»: per l'utente «orologio» è quello che dice l'ora.
 - I parallelismi con C# già usati e le correzioni dell'utente stanno nel file `Docs/Info/Spiegazioni/ParallelismiCSharp.md`: ogni spiegazione li riusa e aggiunge lì quelli nuovi.
 - L'Assistente Google è deprecato e sostituito da Gemini: ricerche, proposte e spiegazioni sui comandi vocali parlano solo di Gemini.
 - I commenti del codice si scrivono in italiano.
@@ -24,6 +25,20 @@ DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco, 
 - Prima di una decisione di architettura grossa o di una dipendenza pesante si chiede all'utente.
 - I warning si risolvono, non si ignorano e non si nascondono: quelli del compilatore, di Gradle, di Android Studio e quelli di obsolescenza. L'app deve restare pulita per durare nel tempo. Un warning che non si riesce a risolvere si riporta all'utente con il motivo: lasciarlo o sopprimerlo lo decide lui.
 - Le informazioni verificate online che possono riservire si scrivono nella cartella `Docs/Info`, in una sottocartella per argomento, con la data della verifica e le pagine lette. Prima di cercare online si guarda lì.
+
+## Come si procede con il codice
+
+- Si segue una lista di feature in ordine: prima le fondamenta che servono alla prima feature, poi le feature successive.
+- Si tratta un punto alla volta, in quattro parti brevi: la feature, cosa si fa nel codice, le fondamenta che mancano o quelle esistenti da usare, le cose di Kotlin che servono a capirle.
+- Le risposte sono molto brevi. L'utente non conosce Kotlin, e un testo lungo lo disperde.
+- Togliere codice o file e creare file nuovi lo fa l'utente, a meno che non chieda espressamente di farlo. Il piano e le risposte gli indicano ogni pezzo da togliere e ogni file da creare, con cosa è e cosa contiene.
+
+## Struttura del codice
+
+- Ogni cosa sta nel suo posto, separata dal resto. Colori e stili stanno in un posto, l'accesso ai dati, come il database o le API, in un altro, la logica in un altro ancora. Per cambiare un colore o il modo di collegarsi al database non si tocca la logica.
+- La logica sta nei file pilota. Contengono solo il flusso principale dell'app e la raccolta e la gestione degli errori: vedi P4 in `Docs/Guidelines/Generali/Propedeutici/Propedeutici.md`.
+- Il log fa parte delle fondamenta: vedi la decisione del 2026-10-19 in `Docs/Ai/DECISIONS.md`.
+- Ogni funzione `@Composable` ha la sua `@Preview`, quando è possibile: serve a controllarla e a capirla anche dopo mesi, senza avviare l'app.
 
 ## Progetto dell'app e design
 
