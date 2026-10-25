@@ -1,0 +1,38 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-25T12:00:00Z"
+  },
+  "title": "DietNGo Pagine",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "designSystems": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Pasti salvati, chiaro" },
+    "PastiScuro.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Pasti salvati, scuro" },
+    "Pasto.dc.html": { "x": 0, "y": 1244, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Nuovo pasto" },
+    "PastoModifica.dc.html": { "x": 470, "y": 1244, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Modifica pasto" },
+    "Diario.dc.html": { "x": 0, "y": 2488, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Diario: giorni" },
+    "DiarioMese.dc.html": { "x": 470, "y": 2488, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Diario: settimane" },
+    "DiarioAnno.dc.html": { "x": 940, "y": 2488, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Diario: mesi" },
+    "DiarioScuro.dc.html": { "x": 1410, "y": 2488, "w": 390, "h": 844, "radius": 36, "is_interactive": true, "title": "Diario scuro: giorni" }
+  },
+  "order": [
+    "Main.dc.html",
+    "PastiScuro.dc.html",
+    "Pasto.dc.html",
+    "PastoModifica.dc.html",
+    "Diario.dc.html",
+    "DiarioMese.dc.html",
+    "DiarioAnno.dc.html",
+    "DiarioScuro.dc.html"
+  ],
+  "notes": {
+    "titoloPasti": { "kind": "title1", "x": 0, "y": -300, "text": "Pasti salvati", "maxW": 860 },
+    "titoloPasto": { "kind": "title1", "x": 0, "y": 944, "text": "Nuovo pasto e modifica", "maxW": 860 },
+    "titoloDiario": { "kind": "title1", "x": 0, "y": 2188, "text": "Diario: la mappa delle giornate", "maxW": 1800 }
+  }
+}

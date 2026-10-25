@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>DietNGo, pasti salvati</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div ref="{{rootRef}}" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: {{c.bg}}; color: {{c.text}}; font-family: Figtree, 'Segoe UI', system-ui, sans-serif">
+
+  <!-- Titolo e numero dei pasti: spariscono quando la ricerca si allarga -->
+  <div style="position: absolute; left: 24px; top: 52px; opacity: {{titleOp}}; transition: opacity 220ms">
+    <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -.02em">Pasti</h1>
+    <div style="margin-top: 2px; font-size: 14px; color: {{c.muted}}">{{count}}</div>
+  </div>
+
+  <!-- Ordinamento: una bolla fissa in alto a destra; il menù sceglie fra nome e preferiti -->
+  <button onClick="{{toggleSort}}" aria-label="Ordina i pasti" aria-expanded="{{sortOpenAttr}}" style="all: unset; cursor: pointer; position: absolute; right: 16px; top: 56px; z-index: 22; width: 48px; height: 48px; border-radius: 24px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"></path></svg>
+  </button>
+  <sc-if value="{{sortOpen}}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{toggleSort}}" aria-label="Chiudi il menù" style="all: unset; position: absolute; inset: 0; z-index: 30"></button>
+    <div role="menu" aria-label="Ordina per" style="position: absolute; right: 16px; top: 112px; z-index: 40; width: 220px; box-sizing: border-box; padding: 8px; border-radius: 22px; background: {{c.sheet}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 14px 34px {{c.shadowStrong}}; display: flex; flex-direction: column; gap: 2px">
+      <sc-for list="{{sorts}}" as="so" hint-placeholder-count="2">
+        <button role="menuitemradio" aria-checked="{{so.checked}}" onClick="{{so.pick}}" style="all: unset; cursor: pointer; height: 48px; padding: 0 12px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600">
+          {{so.label}}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity: {{so.tick}}"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- Ricerca: una bolla con la lente accanto all'ordinamento, che si allarga verso sinistra in un campo -->
+  <div style="position: absolute; right: 72px; top: 56px; z-index: 20; height: 48px; width: {{searchW}}px; box-sizing: border-box; border-radius: 24px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; overflow: hidden; transition: width 320ms cubic-bezier(.2,.9,.25,1)">
+    <sc-if value="{{searchClosed}}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{openSearch}}" aria-label="Cerca un pasto" style="all: unset; cursor: pointer; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>
+      </button>
+    </sc-if>
+    <sc-if value="{{searchOpen}}" hint-placeholder-val="{{ false }}">
+      <div style="flex: none; width: 46px; display: flex; justify-content: center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>
+      </div>
+      <input type="text" value="{{query}}" onChange="{{onQuery}}" placeholder="Cerca per nome" aria-label="Cerca per nome" style="flex: 1; min-width: 0; height: 44px; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; color: {{c.text}}">
+      <button onClick="{{closeSearch}}" aria-label="Chiudi la ricerca" style="all: unset; cursor: pointer; flex: none; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </sc-if>
+  </div>
+
+  <!-- Griglia di piatti tondi: arrivano dal basso uno dopo l'altro, come serviti in tavola -->
+  <div style="position: absolute; left: 0; right: 0; top: 128px; bottom: 0; overflow-y: auto; overflow-x: hidden; box-sizing: border-box; padding: 8px 16px 120px">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; column-gap: 12px">
+      <sc-if value="{{showAdd}}" hint-placeholder-val="{{ true }}">
+        <a href="Pasto.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: {{c.text}}; opacity: {{addAp.o}}; transform: translateY({{addAp.dy}}px); transition: opacity 360ms, transform 620ms cubic-bezier(.3,1.45,.5,1)">
+          <span style="box-sizing: border-box; width: 164px; height: 164px; border-radius: 50%; border: 2px dashed {{c.dash}}; display: flex; align-items: center; justify-content: center">
+            <span style="width: 60px; height: 60px; border-radius: 50%; background: {{c.plusBg}}; display: flex; align-items: center; justify-content: center">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            </span>
+          </span>
+          <span style="font-size: 15px; font-weight: 600">Nuovo pasto</span>
+        </a>
+      </sc-if>
+      <sc-for list="{{items}}" as="m" hint-placeholder-count="5">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: {{m.o}}; transform: translateY({{m.dy}}px); transition: opacity 360ms, transform 620ms cubic-bezier(.3,1.45,.5,1)">
+          <div style="position: relative; width: 164px; height: 164px">
+            <button onClick="{{m.askReg}}" aria-label="Registra {{m.name}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; inset: 0; border-radius: 50%; background: {{c.tile}}; box-shadow: inset 0 0 0 1px {{c.tileRing}}; display: flex; align-items: center; justify-content: center">
+              <svg viewBox="0 0 120 90" width="84" height="63" aria-hidden="true" style="margin-top: 2px">
+                <ellipse cx="60" cy="82" rx="40" ry="5" fill="{{c.floor}}"></ellipse>
+                <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{m.f1}}"></path>
+                <path d="M26 54c3 9 9 15 17 19" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"></path>
+                <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{m.f1d}}"></ellipse>
+                <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{m.f2}}"></path>
+                <circle cx="44" cy="34" r="8" fill="{{m.f3}}"></circle>
+                <circle cx="72" cy="31" r="7" fill="{{m.f4}}"></circle>
+                <circle cx="60" cy="24" r="6" fill="{{m.f3}}"></circle>
+                <circle cx="56" cy="40" r="5" fill="{{m.f5}}"></circle>
+                <circle cx="84" cy="40" r="4.5" fill="{{m.f5}}"></circle>
+              </svg>
+            </button>
+            <!-- Le tre azioni a triangolo, dentro il cerchio: stella a sinistra, matita a destra, cestino in basso al centro -->
+            <button onClick="{{m.toggleFav}}" aria-label="{{m.favAria}}" aria-pressed="{{m.favPressed}}" style="all: unset; cursor: pointer; position: absolute; left: 17px; top: 17px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+              <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c.badge}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 3px 8px {{c.shadow}}; display: flex; align-items: center; justify-content: center">
+                <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="{{m.starFill}}" stroke="{{m.starStroke}}" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              </span>
+            </button>
+            <a href="PastoModifica.dc.html" aria-label="Modifica {{m.name}}" style="position: absolute; right: 17px; top: 17px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+              <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c.badge}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 3px 8px {{c.shadow}}; display: flex; align-items: center; justify-content: center">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg>
+              </span>
+            </a>
+            <button onClick="{{m.askDel}}" aria-label="Elimina {{m.name}}" style="all: unset; cursor: pointer; position: absolute; left: 60px; top: 117px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+              <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c.badge}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 3px 8px {{c.shadow}}; display: flex; align-items: center; justify-content: center">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"></path></svg>
+              </span>
+            </button>
+          </div>
+          <div style="text-align: center; padding: 0 4px">
+            <div style="font-size: 15px; font-weight: 600; line-height: 1.25; text-wrap: balance">{{m.name}}</div>
+            <div style="margin-top: 2px; font-size: 13px; color: {{c.muted}}">{{m.qty}}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 48px 24px; text-align: center; font-size: 16px; color: {{c.muted}}">Nessun pasto con questo nome</div>
+    </sc-if>
+  </div>
+
+  <!-- Pillola di navigazione, con la home e «Pasti» attivo -->
+  <nav aria-label="Navigazione" style="position: absolute; left: 50%; bottom: 24px; z-index: 300; transform: translateX(-50%); height: 64px; box-sizing: border-box; padding: 6px 8px; border-radius: 32px; background: {{c.pill}}; box-shadow: inset 0 0 0 1px {{c.pillRing}}, 0 8px 28px {{c.shadow}}; display: flex; align-items: center; gap: 2px">
+    <a href="#" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5"></path><path d="M6 9.5V19a1 1 0 0 0 1 1h3.5v-5h3v5H17a1 1 0 0 0 1-1V9.5"></path></svg>
+      Home
+    </a>
+    <a href="Main.dc.html" aria-current="page" style="width: 66px; height: 52px; border-radius: 26px; background: {{c.pillActive}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 8c0-2 2-2 2-4M13 8c0-2 2-2 2-4"></path></svg>
+      Pasti
+    </a>
+    <a href="Diario.dc.html" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>
+      Diario
+    </a>
+    <a href="#" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"></path><circle cx="12" cy="12.5" r="3.5"></circle></svg>
+      Scansiona
+    </a>
+    <div style="width: 1px; height: 28px; background: {{c.pillRing}}; margin: 0 6px"></div>
+    <a href="#" aria-label="Profilo e impostazioni" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; background: {{c.avatar}}; color: {{c.avatarText}}; font-size: 17px; font-weight: 700">G</a>
+  </nav>
+
+  <!-- Conferma: «Registrare il pasto?» oppure «Eliminare il pasto?», con Sì e No -->
+  <sc-if value="{{showAsk}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 450">
+      <button onClick="{{askNo}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="alertdialog" aria-label="{{askTitle}}" style="position: absolute; left: 24px; right: 24px; top: 250px; box-sizing: border-box; padding: 26px 20px 20px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 20px 50px {{c.shadow}}; display: flex; flex-direction: column; align-items: center; text-align: center">
+        <svg viewBox="0 0 120 90" width="112" height="84" aria-hidden="true">
+          <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{ask.f1}}"></path>
+          <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{ask.f1d}}"></ellipse>
+          <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{ask.f2}}"></path>
+          <circle cx="44" cy="34" r="8" fill="{{ask.f3}}"></circle>
+          <circle cx="72" cy="31" r="7" fill="{{ask.f4}}"></circle>
+          <circle cx="60" cy="24" r="6" fill="{{ask.f3}}"></circle>
+        </svg>
+        <div style="margin-top: 12px; font-size: 21px; font-weight: 700">{{askTitle}}</div>
+        <div style="margin-top: 4px; font-size: 15px; color: {{c.muted}}">{{ask.name}}</div>
+        <div style="margin-top: 22px; align-self: stretch; display: flex; gap: 10px">
+          <button onClick="{{askNo}}" style="all: unset; cursor: pointer; flex: 1; height: 52px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px {{c.chipRing}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">No</button>
+          <button onClick="{{askYes}}" style="all: unset; cursor: pointer; flex: 1; height: 52px; border-radius: 18px; background: {{askYesBg}}; color: {{askYesFg}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Sì</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Conferma della registrazione: la stessa sequenza della home, qui ridotta alla spunta -->
+  <sc-if value="{{showReg}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 500; background: {{c.bg}}; opacity: {{regOp}}; transition: opacity 280ms">
+      <button onClick="{{closeReg}}" aria-label="Chiudi e torna ai pasti" style="all: unset; cursor: pointer; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px">
+        <span style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #5FD38D, #1F8A57 70%); box-shadow: 0 16px 36px rgba(31,138,87,.35); display: flex; align-items: center; justify-content: center; transform: scale({{regScale}}); transition: transform 480ms cubic-bezier(.3,1.5,.5,1)">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+        </span>
+        <span style="text-align: center">
+          <span style="display: block; font-size: 26px; font-weight: 700; letter-spacing: -.01em">{{regName}}</span>
+          <span style="display: block; margin-top: 6px; font-size: 16px; color: {{c.muted}}">{{regSub}}</span>
+        </span>
+      </button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scuro":{"editor":"boolean","default":false},"rivedi":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { query: '', cerca: false, sort: 'alpha', sortOpen: false, favs: ['pasta', 'farro', 'yogurt'], deleted: [], ask: null, reg: null, regVis: false, intro: 0 };
+    this.timers = [];
+    // L'entrata riparte ogni volta che la pagina torna sullo schermo
+    this.rootRef = (el) => {
+      if (!el || this.io) return;
+      try {
+        this.io = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) this.playIntro();
+        }, { threshold: 0.6 });
+        this.io.observe(el);
+      } catch (e) { this.playIntro(); }
+    };
+  }
+  componentWillUnmount() {
+    this.timers.forEach(clearTimeout);
+    clearInterval(this.introTimer);
+    if (this.io) this.io.disconnect();
+    window.removeEventListener('resize', this.onResize);
+  }
+  later(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  playIntro() {
+    clearInterval(this.introTimer);
+    this.setState({ intro: 0 });
+    this.introTimer = setInterval(() => {
+      if (this.state.intro >= 8) clearInterval(this.introTimer);
+      else this.setState({ intro: this.state.intro + 1 });
+    }, 120);
+  }
+  // Nel canvas l'entrata riparte anche quando la tavola si allarga a tutta finestra, o dal comando «Rivedi l'entrata»
+  componentDidMount() {
+    this.onResize = () => this.playIntro();
+    window.addEventListener('resize', this.onResize);
+  }
+  componentDidUpdate(prev) {
+    if (prev.rivedi !== this.props.rivedi) this.playIntro();
+  }
+
+  meals() {
+    return [
+      { id: 'pasta', name: 'Pasta al pomodoro', qty: '320 g', f1: '#E8D3B0', f1d: '#F4E6CC', f2: '#F0B347', f3: '#D63A22', f4: '#3E9A4C', f5: '#FFF1C9' },
+      { id: 'farro', name: 'Insalata di farro', qty: '280 g', f1: '#3F8FC9', f1d: '#8EC3EA', f2: '#D9AE6A', f3: '#E2412B', f4: '#5DB35B', f5: '#F7E4A6' },
+      { id: 'yogurt', name: 'Yogurt e frutti di bosco', qty: '200 g', f1: '#E58E6E', f1d: '#F6C2AC', f2: '#FDF9F2', f3: '#6A2F93', f4: '#D8243F', f5: '#2F49A8' },
+      { id: 'riso', name: 'Riso cantonese', qty: '350 g', f1: '#1F4E86', f1d: '#4F82BE', f2: '#F8EFD8', f3: '#F5C531', f4: '#6FB54A', f5: '#EE7F5A' },
+      { id: 'zuppa', name: 'Zuppa di legumi', qty: '300 g', f1: '#B5532B', f1d: '#DC8A62', f2: '#D99A45', f3: '#7E4A2A', f4: '#F3CF65', f5: '#4E8C42' },
+      { id: 'salmone', name: 'Salmone e patate', qty: '330 g', f1: '#4E8F7B', f1d: '#93C7B6', f2: '#F8F2E6', f3: '#F27A55', f4: '#EBC152', f5: '#4F9A4C' },
+      { id: 'toast', name: 'Toast e spremuta', qty: '180 g', f1: '#E08A2B', f1d: '#F5B669', f2: '#E6AE5E', f3: '#F38A1F', f4: '#F8E092', f5: '#B9732F' },
+      { id: 'porridge', name: 'Porridge e banana', qty: '250 g', f1: '#7A9BC4', f1d: '#B9CDE6', f2: '#EADBC0', f3: '#F4D35E', f4: '#8B5E3C', f5: '#FFF6E0' },
+      { id: 'pollo', name: 'Pollo e verdure', qty: '340 g', f1: '#5E7D4A', f1d: '#9DBA86', f2: '#E9C28A', f3: '#E9693F', f4: '#6FB54A', f5: '#F7E4A6' }
+    ];
+  }
+
+  // Dopo il «Sì»: registra con l'ora attuale e la quantità salvata
+  register(m) {
+    const now = new Date();
+    const ora = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    this.timers.forEach(clearTimeout);
+    this.timers = [];
+    this.setState({ ask: null, reg: { name: m.name, ora: ora }, regVis: false });
+    this.later(30, () => this.setState({ regVis: true }));
+    this.later(2200, () => this.setState({ regVis: false }));
+    this.later(2500, () => this.setState({ reg: null }));
+  }
+
+  renderVals() {
+    const dark = this.props.scuro ?? false;
+    const c = dark ? {
+      bg: '#151515', text: '#EDECE8', muted: '#A6A49E', chip: '#222220', chipRing: '#31302D',
+      tile: '#1E1E1C', tileRing: '#2C2B28', floor: 'rgba(0,0,0,.35)', dash: '#4A4945', plusBg: '#2E2D2A', badge: '#2A2927',
+      star: '#E3B75A', pill: '#222220', pillRing: '#32312E', pillActive: '#33322F', shadow: 'rgba(0,0,0,.45)',
+      avatar: '#E9C9A8', avatarText: '#3A2614', scrim: 'rgba(0,0,0,.55)', sheet: '#1E1E1C', danger: '#E5675A', shadowStrong: 'rgba(0,0,0,.6)'
+    } : {
+      bg: '#FCFCFB', text: '#151515', muted: '#5E5C57', chip: '#F3F1EC', chipRing: '#E6E2DA',
+      tile: '#F5F3EF', tileRing: '#ECE8E1', floor: 'rgba(21,21,21,.08)', dash: '#CFCAC1', plusBg: '#EFEBE4', badge: '#FFFFFF',
+      star: '#E0A93B', pill: '#FFFFFF', pillRing: '#E7E4DE', pillActive: '#EFECE6', shadow: 'rgba(21,21,21,.08)',
+      avatar: '#3A2614', avatarText: '#F6E7D6', scrim: 'rgba(21,21,21,.32)', sheet: '#FFFFFF', danger: '#C8382A', shadowStrong: 'rgba(21,21,21,.16)'
+    };
+
+    const st = this.state;
+    const favs = st.favs;
+    const q = st.query.trim().toLowerCase();
+    const all = this.meals().filter((m) => st.deleted.indexOf(m.id) < 0);
+    // Comparsa con un piccolo rimbalzo, un piatto alla volta: prima la riga visibile più in basso, da sinistra a destra, poi quelle sopra
+    const ap = (rank) => (st.intro > rank ? { o: 1, dy: 0 } : { o: 0, dy: 60 });
+    const visibleRows = 3;
+    const rankOf = (g) => {
+      const row = Math.floor(g / 2), col = g % 2;
+      return row < visibleRows ? (visibleRows - 1 - row) * 2 + col : visibleRows * 2;
+    };
+    const first = q === '' ? 1 : 0;
+    // Di base in ordine di nome, così una stella appena premuta non sposta il pasto da sotto il dito; a scelta, i preferiti prima
+    const byName = (a, b) => a.name.localeCompare(b.name, 'it');
+    const list = all
+      .filter((m) => q === '' || m.name.toLowerCase().indexOf(q) >= 0)
+      .map((m) => ({ ...m, isFav: favs.indexOf(m.id) >= 0 }))
+      .sort((a, b) => (st.sort === 'fav' ? (Number(b.isFav) - Number(a.isFav)) || byName(a, b) : byName(a, b)));
+    const sorts = [['alpha', 'Nome (A–Z)'], ['fav', 'Preferiti prima']].map((s) => ({
+      label: s[1],
+      checked: st.sort === s[0] ? 'true' : 'false',
+      tick: st.sort === s[0] ? 1 : 0,
+      pick: () => this.setState({ sort: s[0], sortOpen: false })
+    }));
+    const items = list.map((m, k) => ({
+      ...m,
+      ...ap(rankOf(k + first)),
+      starFill: m.isFav ? c.star : 'none',
+      starStroke: m.isFav ? c.star : c.muted,
+      favPressed: m.isFav ? 'true' : 'false',
+      favAria: m.isFav ? 'Togli ' + m.name + ' dai preferiti' : 'Aggiungi ' + m.name + ' ai preferiti',
+      askReg: () => this.setState({ ask: { kind: 'reg', meal: m } }),
+      askDel: () => this.setState({ ask: { kind: 'del', meal: m } }),
+      toggleFav: () => {
+        const next = m.isFav ? favs.filter((f) => f !== m.id) : favs.concat([m.id]);
+        this.setState({ favs: next });
+      }
+    }));
+    const ask = st.ask;
+    const isDel = !!ask && ask.kind === 'del';
+    const reg = st.reg;
+
+    return {
+      c, items,
+      rootRef: this.rootRef,
+      addAp: ap(rankOf(0)),
+      count: all.length + (all.length === 1 ? ' pasto salvato' : ' pasti salvati'),
+      query: st.query,
+      searchOpen: st.cerca,
+      searchClosed: !st.cerca,
+      searchW: st.cerca ? 302 : 48,
+      sorts,
+      sortOpen: st.sortOpen,
+      sortOpenAttr: st.sortOpen ? 'true' : 'false',
+      toggleSort: () => this.setState({ sortOpen: !st.sortOpen }),
+      titleOp: st.cerca ? 0 : 1,
+      showAdd: q === '',
+      noResults: q !== '' && items.length === 0,
+      openSearch: () => this.setState({ cerca: true }),
+      closeSearch: () => this.setState({ cerca: false, query: '' }),
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      showAsk: !!ask,
+      ask: ask ? ask.meal : this.meals()[0],
+      askTitle: isDel ? 'Eliminare il pasto?' : 'Registrare il pasto?',
+      askYesBg: isDel ? c.danger : c.text,
+      askYesFg: isDel ? '#FFFFFF' : c.bg,
+      askNo: () => this.setState({ ask: null }),
+      askYes: () => {
+        if (!ask) return;
+        if (ask.kind === 'reg') this.register(ask.meal);
+        else this.setState({ deleted: st.deleted.concat([ask.meal.id]), ask: null });
+      },
+      showReg: !!reg,
+      regName: reg ? reg.name : '',
+      regSub: reg ? 'Registrato alle ' + reg.ora : '',
+      regOp: st.regVis ? 1 : 0,
+      regScale: st.regVis ? 1 : 0.7,
+      closeReg: () => { this.timers.forEach(clearTimeout); this.setState({ reg: null, regVis: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

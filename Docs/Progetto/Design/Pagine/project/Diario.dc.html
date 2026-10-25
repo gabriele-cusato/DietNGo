@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>DietNGo, diario</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div ref="{{rootRef}}" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: {{c.bg}}; color: {{c.text}}; font-family: Figtree, 'Segoe UI', system-ui, sans-serif">
+
+  <!-- La mappa: si sposta col dito, si entra allargando le dita e si torna indietro stringendole; un tocco nel vuoto mostra la pillola -->
+  <div onWheel="{{onWheel}}" onPointerDown="{{onDown}}" onPointerMove="{{onMove}}" onPointerUp="{{onUp}}" onPointerCancel="{{onCancel}}" onPointerLeave="{{onCancel}}" style="position: absolute; inset: 0; touch-action: none">
+    <div style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform: translate({{px}}px, {{py}}px) scale({{sc}}); transform-origin: {{ox}}px {{oy}}px; opacity: {{op}}; transition: {{tr}}">
+
+      <!-- Livello dei mesi -->
+      <sc-if value="{{isAnno}}" hint-placeholder-val="{{ false }}">
+        <svg width="390" height="1000" viewBox="0 0 390 1000" aria-hidden="true" style="position: absolute; left: 0; top: 0; overflow: visible; opacity: {{threadOp}}; transition: opacity 400ms">
+          <path d="{{annoPath}}" fill="none" stroke="{{c.thread}}" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="4">
+          <div style="opacity: {{m.o}}; transform: translateY({{m.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+            <!-- Dentro, le quattro settimane più recenti a S al centro; sotto, se ce ne sono altre, l'inizio di una nuova S a pallini piccoli -->
+            <button onClick="{{m.open}}" aria-label="{{m.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{m.l}}px; top: {{m.t}}px; width: 116px; height: 116px; border-radius: 50%; background: {{m.bg}}; box-shadow: 0 12px 26px {{c.sphereShadow}}">
+              <svg width="116" height="116" viewBox="0 0 116 116" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+                <path d="{{m.mini}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="{{m.tail}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.2" stroke-linecap="round" opacity=".55"></path>
+              </svg>
+              <sc-for list="{{m.dots}}" as="d" hint-placeholder-count="4">
+                <span style="box-sizing: border-box; position: absolute; left: {{d.l}}px; top: {{d.t}}px; width: 14px; height: 14px; border-radius: 50%; background: {{d.bg}}; box-shadow: 0 0 0 1.5px {{c.dotRing}}"></span>
+              </sc-for>
+              <sc-for list="{{m.more}}" as="mo" hint-placeholder-count="3">
+                <span style="position: absolute; left: {{mo.l}}px; top: {{mo.t}}px; width: 5px; height: 5px; border-radius: 50%; background: {{c.innerThread}}"></span>
+              </sc-for>
+            </button>
+            <div style="position: absolute; left: {{m.lx}}px; top: {{m.ly}}px; width: 130px; display: flex; flex-direction: column; align-items: {{m.align}}; gap: 4px; pointer-events: none">
+              <span style="font-size: 16px; font-weight: 700">{{m.label}}</span>
+              <span style="display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: {{c.flameText}}">
+                {{m.maxText}}
+                <svg width="16" height="20" viewBox="0 0 74 92" aria-hidden="true"><path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="#F2845F"></path><path d="M37 40c4 8 14 14 14 26a14 14 0 0 1-28 0c0-8 6-14 8-18 0 6 2 8 4 8-1-8 0-12 2-16z" fill="#FFC97A"></path></svg>
+              </span>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <!-- Livello delle settimane -->
+      <sc-if value="{{isMese}}" hint-placeholder-val="{{ false }}">
+        <svg width="390" height="1000" viewBox="0 0 390 1000" aria-hidden="true" style="position: absolute; left: 0; top: 0; overflow: visible; opacity: {{threadOp}}; transition: opacity 400ms">
+          <path d="{{mesePath}}" fill="none" stroke="{{c.thread}}" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <sc-for list="{{weeks}}" as="w" hint-placeholder-count="4">
+          <div style="opacity: {{w.o}}; transform: translateY({{w.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+            <!-- Dentro, i quattro giorni più recenti a S al centro; sotto, l'inizio di una nuova S a pallini piccoli: c'è dell'altro -->
+            <button onClick="{{w.open}}" aria-label="{{w.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{w.l}}px; top: {{w.t}}px; width: 104px; height: 104px; border-radius: 50%; background: {{w.bg}}; box-shadow: 0 10px 24px {{c.sphereShadow}}">
+              <svg width="104" height="104" viewBox="0 0 104 104" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+                <path d="{{w.mini}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="{{w.tail}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.2" stroke-linecap="round" opacity=".55"></path>
+              </svg>
+              <sc-for list="{{w.dots}}" as="d" hint-placeholder-count="4">
+                <span style="box-sizing: border-box; position: absolute; left: {{d.l}}px; top: {{d.t}}px; width: 12px; height: 12px; border-radius: 50%; background: {{d.bg}}; box-shadow: {{d.ring}}"></span>
+              </sc-for>
+              <sc-for list="{{w.more}}" as="mo" hint-placeholder-count="3">
+                <span style="position: absolute; left: {{mo.l}}px; top: {{mo.t}}px; width: 5px; height: 5px; border-radius: 50%; background: {{c.innerThread}}"></span>
+              </sc-for>
+            </button>
+            <div style="position: absolute; left: {{w.lx}}px; top: {{w.ly}}px; width: 140px; display: flex; flex-direction: column; align-items: {{w.align}}; gap: 2px; pointer-events: none">
+              <span style="font-size: 16px; font-weight: 700">{{w.ord}}<sup style="font-size: .62em">a</sup> settimana</span>
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: {{c.muted}}">
+                {{w.range}}
+                <span style="position: relative; width: 26px; height: 32px; filter: {{w.flameFilter}}">
+                  <svg width="26" height="32" viewBox="0 0 74 92" aria-hidden="true"><path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="#F2845F"></path><path d="M37 34c6 9 18 16 18 32a18 18 0 0 1-36 0c0-10 7-17 10-21 0 7 3 9 5 9-1-9 0-15 3-20z" fill="#FFC97A"></path></svg>
+                  <span style="position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; font-size: 12px; font-weight: 800; color: {{w.numColor}}">{{w.count}}</span>
+                </span>
+              </span>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <!-- Livello dei giorni: il filo prende il colore della fiamma lungo la serie -->
+      <sc-if value="{{isSettimana}}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{segs}}" as="s" hint-placeholder-count="6">
+          <svg width="390" height="2700" viewBox="0 0 390 2700" aria-hidden="true" style="position: absolute; left: 0; top: 0; overflow: visible; opacity: {{s.o}}; transition: opacity 360ms">
+            <path d="{{s.d}}" fill="none" stroke="{{s.color}}" stroke-width="{{s.width}}" stroke-linecap="round"></path>
+          </svg>
+        </sc-for>
+        <sc-for list="{{wkDays}}" as="d" hint-placeholder-count="7">
+          <div style="opacity: {{d.o}}; transform: translateY({{d.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+            <button onClick="{{d.open}}" aria-label="{{d.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{d.l}}px; top: {{d.t}}px; width: {{d.size}}px; height: {{d.size}}px; border-radius: 50%; background: {{d.bg}}; border: {{d.border}}; box-shadow: {{d.shadow}}"></button>
+            <div style="position: absolute; left: {{d.lx}}px; top: {{d.ly}}px; width: 120px; text-align: {{d.align}}; font-size: 15px; font-weight: 600; color: {{d.labelColor}}; pointer-events: none">{{d.label}}</div>
+            <sc-if value="{{d.hasMark}}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; left: {{d.mkL}}px; top: {{d.mkT}}px; width: 150px; height: 26px; display: flex; flex-direction: {{d.mkDir}}; align-items: center; gap: 6px; pointer-events: none">
+                <sc-if value="{{d.mkTwig}}" hint-placeholder-val="{{ true }}">
+                  <span style="flex: none; width: 18px; height: 2px; border-radius: 1px; background: {{c.twig}}"></span>
+                </sc-if>
+                <svg width="18" height="22" viewBox="0 0 74 92" aria-hidden="true" style="flex: none"><path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="#F2845F"></path><path d="M37 40c4 8 14 14 14 26a14 14 0 0 1-28 0c0-8 6-14 8-18 0 6 2 8 4 8-1-8 0-12 2-16z" fill="#FFC97A"></path></svg>
+                <span style="font-size: 13px; font-weight: 700; color: {{c.flameText}}; white-space: nowrap">{{d.mkText}}</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <!-- Livello del singolo giorno: la sfera, i giorni vicini ai lati e sotto i pasti -->
+      <sc-if value="{{isGiorno}}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{hasOlder}}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{goOlder}}" aria-label="{{olderAria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{older.l}}px; top: {{older.t}}px; width: 52px; height: 52px; border-radius: 50%; background: {{older.bg}}; border: {{older.border}}; box-shadow: 0 6px 14px {{c.sphereShadow}}; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; color: {{older.ink}}; opacity: {{peekOp}}; transition: opacity 420ms">{{older.n}}</button>
+        </sc-if>
+        <sc-if value="{{hasNewer}}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{goNewer}}" aria-label="{{newerAria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{newer.l}}px; top: {{newer.t}}px; width: 52px; height: 52px; border-radius: 50%; background: {{newer.bg}}; border: {{newer.border}}; box-shadow: 0 6px 14px {{c.sphereShadow}}; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; color: {{newer.ink}}; opacity: {{peekOp}}; transition: opacity 420ms">{{newer.n}}</button>
+        </sc-if>
+        <div style="opacity: {{mainAp.o}}; transform: translateY({{mainAp.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+          <div style="box-sizing: border-box; position: absolute; left: {{main.l}}px; top: {{main.t}}px; width: 124px; height: 124px; border-radius: 50%; background: {{main.bg}}; border: {{main.border}}; box-shadow: {{main.shadow}}; display: flex; flex-direction: column; align-items: center; justify-content: center; color: {{main.ink}}">
+            <span style="font-size: 38px; font-weight: 800; line-height: 1">{{main.n}}</span>
+            <span style="margin-top: 4px; font-size: 14px; font-weight: 600">{{main.wd}}</span>
+          </div>
+          <button onClick="{{openAdd}}" aria-label="{{addAria}}" style="all: unset; cursor: pointer; position: absolute; left: {{plus.l}}px; top: {{plus.t}}px; width: 44px; height: 44px; border-radius: 50%; background: {{c.text}}; box-shadow: 0 0 0 4px {{c.bg}}, 0 8px 18px {{c.sphereShadow}}; display: flex; align-items: center; justify-content: center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.bg}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+        <sc-if value="{{noMeals}}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; left: 32px; right: 32px; top: 350px; text-align: center">
+            <div style="font-size: 17px; font-weight: 700">Nessun pasto registrato</div>
+            <div style="margin-top: 6px; font-size: 15px; color: {{c.muted}}">Con il + registri un pasto salvato in questo giorno.</div>
+          </div>
+        </sc-if>
+        <sc-for list="{{cards}}" as="m" hint-placeholder-count="3">
+          <button onClick="{{m.open}}" aria-label="{{m.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: 24px; top: {{m.top}}px; width: 342px; height: 76px; padding: 0 14px 0 8px; border-radius: 24px; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}; display: flex; align-items: center; gap: 10px; opacity: {{m.o}}; transform: translateY({{m.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+            <svg viewBox="0 0 120 90" width="72" height="54" aria-hidden="true" style="flex: none">
+              <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{m.f1}}"></path>
+              <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{m.f1d}}"></ellipse>
+              <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{m.f2}}"></path>
+              <circle cx="44" cy="34" r="8" fill="{{m.f3}}"></circle>
+              <circle cx="72" cy="31" r="7" fill="{{m.f4}}"></circle>
+              <circle cx="60" cy="24" r="6" fill="{{m.f3}}"></circle>
+              <circle cx="56" cy="40" r="5" fill="{{m.f5}}"></circle>
+            </svg>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.name}}</span>
+              <span style="font-size: 13px; color: {{c.muted}}">{{m.sub}}</span>
+            </span>
+            <sc-if value="{{m.isF0}}" hint-placeholder-val="{{ false }}">
+              <svg width="30" height="30" viewBox="0 0 72 72" aria-hidden="true" style="flex: none"><circle cx="36" cy="36" r="31" fill="#F25555"></circle><ellipse cx="27" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse><ellipse cx="45" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse><path d="M26 53c5-6 15-6 20 0" fill="none" stroke="#4A0B0E" stroke-width="3.6" stroke-linecap="round"></path></svg>
+            </sc-if>
+            <sc-if value="{{m.isF1}}" hint-placeholder-val="{{ false }}">
+              <svg width="30" height="30" viewBox="0 0 72 72" aria-hidden="true" style="flex: none"><circle cx="36" cy="36" r="31" fill="#FFCF3F"></circle><ellipse cx="27" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse><ellipse cx="45" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse><path d="M26 50h20" stroke="#4F3500" stroke-width="3.6" stroke-linecap="round"></path></svg>
+            </sc-if>
+            <sc-if value="{{m.isF2}}" hint-placeholder-val="{{ true }}">
+              <svg width="30" height="30" viewBox="0 0 72 72" aria-hidden="true" style="flex: none"><circle cx="36" cy="36" r="31" fill="#3FC47A"></circle><path d="M21 35c2-5 9-5 11 0M40 35c2-5 9-5 11 0" fill="none" stroke="#0A3D22" stroke-width="3.6" stroke-linecap="round"></path><path d="M22 44c2 12 26 12 28 0z" fill="#0A3D22"></path></svg>
+            </sc-if>
+            <sc-if value="{{m.isNone}}" hint-placeholder-val="{{ false }}">
+              <span style="flex: none; box-sizing: border-box; width: 30px; height: 30px; border-radius: 50%; border: 2px dashed {{c.dash}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: {{c.muted}}">?</span>
+            </sc-if>
+          </button>
+        </sc-for>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- In alto: indietro allontana la visuale, avanti la avvicina; al centro il titolo -->
+  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 120px; z-index: 50; background: linear-gradient({{c.bg}} 55%, {{c.bgClear}}); pointer-events: none"></div>
+  <button onClick="{{zoomOut}}" aria-label="{{upAria}}" aria-disabled="{{backDisabled}}" style="all: unset; cursor: pointer; position: absolute; left: 16px; top: 50px; z-index: 60; width: 44px; height: 44px; border-radius: 50%; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}; display: flex; align-items: center; justify-content: center; opacity: {{backOp}}; pointer-events: {{backPointer}}">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+  </button>
+  <div style="position: absolute; left: 80px; right: 80px; top: 50px; z-index: 60; text-align: center; pointer-events: none">
+    <div style="font-size: 18px; font-weight: 700; line-height: 24px">Diario</div>
+    <div style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{c.muted}}">{{levelName}}</div>
+  </div>
+  <button onClick="{{zoomInBtn}}" aria-label="{{downAria}}" aria-disabled="{{fwdDisabled}}" style="all: unset; cursor: pointer; position: absolute; right: 16px; top: 50px; z-index: 60; width: 44px; height: 44px; border-radius: 50%; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}; display: flex; align-items: center; justify-content: center; opacity: {{fwdOp}}; pointer-events: {{fwdPointer}}">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+  </button>
+
+  <!-- Bollino della pillola: di base a destra, nelle impostazioni anche a sinistra o al centro; toccato, cade nella pillola come una goccia che entra nel suo liquido -->
+  <button onClick="{{openPill}}" aria-label="Mostra la navigazione" style="all: unset; cursor: pointer; position: absolute; left: {{bub.left}}px; bottom: 30px; z-index: 310; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transform: translateY({{bub.y}}px) scale({{bub.s}}); opacity: {{bub.o}}; pointer-events: {{bub.pe}}; transition: transform 300ms cubic-bezier(.5,0,.75,0) {{bub.delay}}, opacity 260ms {{bub.delay}}">
+    <span style="width: 32px; height: 32px; border-radius: 50%; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}, 0 6px 16px {{c.shadow}}; display: flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+    </span>
+  </button>
+
+  <!-- Pillola di navigazione: nascosta all'entrata; si apre dal bollino come un liquido che si allarga, resta circa 10 secondi o finché si tocca la mappa -->
+  <nav aria-label="Navigazione" aria-hidden="{{pillHidden}}" style="position: absolute; left: 50%; bottom: 24px; z-index: 300; height: 64px; box-sizing: border-box; padding: 6px 8px; border-radius: 32px; background: {{c.pill}}; box-shadow: inset 0 0 0 1px {{c.pillRing}}, 0 8px 28px {{c.shadow}}; display: flex; align-items: center; gap: 2px; transform-origin: {{pillOrigin}}; transform: translateX(-50%) translateY({{pillY}}px) scale({{pillSX}}, {{pillSY}}); opacity: {{pillOp}}; pointer-events: {{pillPointer}}; transition: transform 560ms cubic-bezier(.3,1.5,.5,1) {{pillDelay}}, opacity 240ms {{pillDelay}}">
+    <a href="#" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5"></path><path d="M6 9.5V19a1 1 0 0 0 1 1h3.5v-5h3v5H17a1 1 0 0 0 1-1V9.5"></path></svg>
+      Home
+    </a>
+    <a href="Main.dc.html" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 8c0-2 2-2 2-4M13 8c0-2 2-2 2-4"></path></svg>
+      Pasti
+    </a>
+    <a href="Diario.dc.html" aria-current="page" style="width: 66px; height: 52px; border-radius: 26px; background: {{c.pillActive}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 700">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>
+      Diario
+    </a>
+    <a href="#" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"></path><circle cx="12" cy="12.5" r="3.5"></circle></svg>
+      Scansiona
+    </a>
+    <div style="width: 1px; height: 28px; background: {{c.pillRing}}; margin: 0 6px"></div>
+    <a href="#" aria-label="Profilo e impostazioni" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; background: {{c.avatar}}; color: {{c.avatarText}}; font-size: 17px; font-weight: 700">G</a>
+  </nav>
+
+  <!-- Pannello del pasto registrato: ora, quantità, sensazione, annullamento -->
+  <sc-if value="{{showMealSheet}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 400">
+      <button onClick="{{closeSheet}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="dialog" aria-label="Pasto registrato" style="position: absolute; left: 8px; right: 8px; bottom: 8px; box-sizing: border-box; padding: 20px 16px 16px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 -8px 30px {{c.shadow}}; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <svg viewBox="0 0 120 90" width="80" height="60" aria-hidden="true" style="flex: none">
+            <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{sm.f1}}"></path>
+            <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{sm.f1d}}"></ellipse>
+            <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{sm.f2}}"></path>
+            <circle cx="44" cy="34" r="8" fill="{{sm.f3}}"></circle>
+            <circle cx="72" cy="31" r="7" fill="{{sm.f4}}"></circle>
+            <circle cx="60" cy="24" r="6" fill="{{sm.f3}}"></circle>
+          </svg>
+          <div>
+            <div style="font-size: 19px; font-weight: 700">{{sm.name}}</div>
+            <div style="margin-top: 2px; font-size: 14px; color: {{c.muted}}">{{sm.when}}</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button aria-label="Cambia ora" style="all: unset; cursor: pointer; box-sizing: border-box; flex: 1; height: 52px; border-radius: 16px; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            {{sm.ora}}
+          </button>
+          <button aria-label="Cambia quantità" style="all: unset; cursor: pointer; box-sizing: border-box; flex: 1; height: 52px; border-radius: 16px; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20h14l-2-11H7z"></path><path d="M9 9a3 3 0 0 1 6 0"></path></svg>
+            {{sm.qty}}
+          </button>
+        </div>
+        <div>
+          <div style="font-size: 15px; font-weight: 600; color: {{c.muted}}; text-align: center">Come ti sei sentito dopo il pasto?</div>
+          <div role="group" aria-label="Come ti sei sentito dopo il pasto" style="margin-top: 10px; display: flex; justify-content: center; gap: 22px">
+            <button onClick="{{sf0.pick}}" aria-label="Male" style="all: unset; cursor: pointer; width: 56px; height: 56px; transform: scale({{sf0.s}}); opacity: {{sf0.o}}; transition: transform 300ms cubic-bezier(.3,1.6,.5,1), opacity 200ms">
+              <svg width="56" height="56" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="31" fill="#F25555"></circle><ellipse cx="27" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse><ellipse cx="45" cy="37" rx="3.6" ry="4.6" fill="#4A0B0E"></ellipse><path d="M26 53c5-6 15-6 20 0" fill="none" stroke="#4A0B0E" stroke-width="3.6" stroke-linecap="round"></path></svg>
+            </button>
+            <button onClick="{{sf1.pick}}" aria-label="Normale" style="all: unset; cursor: pointer; width: 56px; height: 56px; transform: scale({{sf1.s}}); opacity: {{sf1.o}}; transition: transform 300ms cubic-bezier(.3,1.6,.5,1), opacity 200ms">
+              <svg width="56" height="56" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="31" fill="#FFCF3F"></circle><ellipse cx="27" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse><ellipse cx="45" cy="35" rx="3.6" ry="4.6" fill="#4F3500"></ellipse><path d="M26 50h20" stroke="#4F3500" stroke-width="3.6" stroke-linecap="round"></path></svg>
+            </button>
+            <button onClick="{{sf2.pick}}" aria-label="Bene" style="all: unset; cursor: pointer; width: 56px; height: 56px; transform: scale({{sf2.s}}); opacity: {{sf2.o}}; transition: transform 300ms cubic-bezier(.3,1.6,.5,1), opacity 200ms">
+              <svg width="56" height="56" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="31" fill="#3FC47A"></circle><path d="M21 35c2-5 9-5 11 0M40 35c2-5 9-5 11 0" fill="none" stroke="#0A3D22" stroke-width="3.6" stroke-linecap="round"></path><path d="M22 44c2 12 26 12 28 0z" fill="#0A3D22"></path></svg>
+            </button>
+          </div>
+        </div>
+        <button onClick="{{undoMeal}}" style="all: unset; cursor: pointer; height: 52px; border-radius: 18px; background: {{c.dangerBg}}; color: {{c.danger}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Annulla registrazione</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Pannello del +: registra un pasto salvato nel giorno scelto -->
+  <sc-if value="{{showAddSheet}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 400">
+      <button onClick="{{closeSheet}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="dialog" aria-label="Registra un pasto" style="position: absolute; left: 8px; right: 8px; bottom: 8px; box-sizing: border-box; padding: 22px 12px 12px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 -8px 30px {{c.shadow}}; display: flex; flex-direction: column; gap: 2px">
+        <div style="padding: 0 12px 12px">
+          <div style="font-size: 19px; font-weight: 700">Registra un pasto</div>
+          <div style="margin-top: 2px; font-size: 14px; color: {{c.muted}}">{{addWhen}}</div>
+        </div>
+        <sc-for list="{{addList}}" as="a" hint-placeholder-count="4">
+          <button onClick="{{a.pick}}" style="all: unset; cursor: pointer; min-height: 60px; padding: 0 12px 0 4px; border-radius: 18px; display: flex; align-items: center; gap: 10px">
+            <svg viewBox="0 0 120 90" width="64" height="48" aria-hidden="true" style="flex: none">
+              <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{a.f1}}"></path>
+              <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{a.f1d}}"></ellipse>
+              <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{a.f2}}"></path>
+              <circle cx="44" cy="34" r="8" fill="{{a.f3}}"></circle>
+              <circle cx="72" cy="31" r="7" fill="{{a.f4}}"></circle>
+            </svg>
+            <span style="flex: 1; font-size: 16px; font-weight: 600">{{a.name}}</span>
+            <span style="font-size: 14px; color: {{c.muted}}">{{a.qty}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scuro":{"editor":"boolean","default":false},"livello":{"editor":"enum","options":["settimana","mese","anno","giorno"],"default":"settimana"},"maniglia":{"editor":"enum","options":["destra","sinistra","centro"],"default":"destra"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      liv: props.livello ?? 'settimana', day: 0, selDay: null, px: 0, py: 0,
+      sc: 1, op: 1, tr: 'none', t: 0, intro: 0, pill: false,
+      sheet: null, faces: {}, removed: {}, added: {}
+    };
+    this.timers = [];
+    this.ptrs = {};
+    this.frozen = false;
+    this._days = this.buildDays();
+    this._runs = this.buildRuns();
+    // L'entrata riparte ogni volta che la pagina torna sullo schermo
+    this.rootRef = (el) => {
+      if (!el || this.io) return;
+      try {
+        this.io = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) this.playIntro();
+        }, { threshold: 0.6 });
+        this.io.observe(el);
+      } catch (e) { this.playIntro(); }
+    };
+  }
+
+  componentDidMount() {
+    // Fluttuazione lenta e perpetua; ferma sotto il dito e con «riduci animazioni»
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { reduce = false; }
+    if (reduce) return;
+    let last = 0;
+    const tick = (now) => {
+      if (!this.frozen && now - last > 30) {
+        last = now;
+        this.setState({ t: now / 1000 });
+      }
+      this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentWillUnmount() {
+    if (this.raf) cancelAnimationFrame(this.raf);
+    clearInterval(this.introTimer);
+    clearTimeout(this.pillTimer);
+    this.timers.forEach(clearTimeout);
+    if (this.io) this.io.disconnect();
+  }
+  later(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  // Entrata: dal basso compaiono gli ultimi cerchi, uno dopo l'altro, e il filo li lega man mano
+  playIntro() {
+    clearInterval(this.introTimer);
+    this.setState({ intro: 0, pill: false });
+    this.introTimer = setInterval(() => {
+      if (this.state.intro >= 12) clearInterval(this.introTimer);
+      else this.setState({ intro: this.state.intro + 1 });
+    }, 140);
+  }
+  // La pillola resta circa 10 secondi, poi torna nel bollino
+  showPill() {
+    this.setState({ pill: true });
+    clearTimeout(this.pillTimer);
+    this.pillTimer = setTimeout(() => this.setState({ pill: false }), 10000);
+  }
+  hidePill() {
+    clearTimeout(this.pillTimer);
+    if (this.state.pill) this.setState({ pill: false });
+  }
+
+  buildDays() {
+    const wd = ['dom', 'sab', 'ven', 'gio', 'mer', 'mar', 'lun'];
+    const wdFull = ['Domenica', 'Sabato', 'Venerdì', 'Giovedì', 'Mercoledì', 'Martedì', 'Lunedì'];
+    const pattern = ['buono', 'buono', 'medio', 'buono', 'basso', 'buono', 'medio'];
+    const out = [];
+    for (let i = 0; i < 28; i++) {
+      let n = 25 - i;
+      let mese = 'ottobre';
+      if (n <= 0) { n += 30; mese = 'settembre'; }
+      // Il 9 ottobre non ha pasti: il filo si spezza lì e la serie riparte il giorno dopo
+      const missing = i === 16;
+      const v = missing ? 'missing' : (i === 8 ? 'none' : pattern[(i * 5 + 3) % 7]);
+      out.push({ i, n, mese, wd: wd[i % 7], wdFull: wdFull[i % 7], v, missing });
+    }
+    return out;
+  }
+  // Serie: giorni di fila con almeno un pasto. start è il giorno più vecchio, end il più recente
+  buildRuns() {
+    const runs = [];
+    let cur = null;
+    for (let i = 27; i >= 0; i--) {
+      if (this._days[i].missing) { cur = null; continue; }
+      if (!cur) { cur = { start: i, end: i }; runs.push(cur); } else cur.end = i;
+    }
+    runs.forEach((r) => { r.len = r.start - r.end + 1; r.active = r.end === 0; });
+    return runs;
+  }
+  runOf(i) { return this._runs.find((r) => i <= r.start && i >= r.end) || null; }
+
+  lib() {
+    return {
+      pasta: { name: 'Pasta al pomodoro', qty: '320 g', f1: '#E8D3B0', f1d: '#F4E6CC', f2: '#F0B347', f3: '#D63A22', f4: '#3E9A4C', f5: '#FFF1C9' },
+      farro: { name: 'Insalata di farro', qty: '280 g', f1: '#3F8FC9', f1d: '#8EC3EA', f2: '#D9AE6A', f3: '#E2412B', f4: '#5DB35B', f5: '#F7E4A6' },
+      yogurt: { name: 'Yogurt e frutti di bosco', qty: '200 g', f1: '#E58E6E', f1d: '#F6C2AC', f2: '#FDF9F2', f3: '#6A2F93', f4: '#D8243F', f5: '#2F49A8' },
+      riso: { name: 'Riso cantonese', qty: '350 g', f1: '#1F4E86', f1d: '#4F82BE', f2: '#F8EFD8', f3: '#F5C531', f4: '#6FB54A', f5: '#EE7F5A' },
+      zuppa: { name: 'Zuppa di legumi', qty: '300 g', f1: '#B5532B', f1d: '#DC8A62', f2: '#D99A45', f3: '#7E4A2A', f4: '#F3CF65', f5: '#4E8C42' },
+      salmone: { name: 'Salmone e patate', qty: '330 g', f1: '#4E8F7B', f1d: '#93C7B6', f2: '#F8F2E6', f3: '#F27A55', f4: '#EBC152', f5: '#4F9A4C' },
+      toast: { name: 'Toast e spremuta', qty: '180 g', f1: '#E08A2B', f1d: '#F5B669', f2: '#E6AE5E', f3: '#F38A1F', f4: '#F8E092', f5: '#B9732F' },
+      porridge: { name: 'Porridge e banana', qty: '250 g', f1: '#7A9BC4', f1d: '#B9CDE6', f2: '#EADBC0', f3: '#F4D35E', f4: '#8B5E3C', f5: '#FFF6E0' },
+      pollo: { name: 'Pollo e verdure', qty: '340 g', f1: '#5E7D4A', f1d: '#9DBA86', f2: '#E9C28A', f3: '#E9693F', f4: '#6FB54A', f5: '#F7E4A6' }
+    };
+  }
+  // Pasti di esempio del giorno i: chiave, pasto, momento, ora, sensazione (-1 = non data)
+  dayMeals(i) {
+    const d = this._days[i];
+    if (d.missing) return [];
+    const pad = (x) => String(x).padStart(2, '0');
+    if (i === 0) {
+      return [
+        { key: '0-0', id: 'yogurt', moment: 'Colazione', ora: '08:10', face: 2 },
+        { key: '0-1', id: 'pasta', moment: 'Pranzo', ora: '12:40', face: 1 },
+        { key: '0-2', id: 'toast', moment: 'Merenda', ora: '16:30', face: -1 }
+      ];
+    }
+    return [
+      { key: i + '-0', id: ['yogurt', 'porridge', 'toast'][i % 3], moment: 'Colazione', ora: '08:' + pad((i * 7) % 50 + 5), face: i % 3 },
+      { key: i + '-1', id: ['farro', 'pasta', 'riso', 'pollo', 'salmone', 'zuppa'][i % 6], moment: 'Pranzo', ora: '13:' + pad((i * 11) % 40 + 5), face: (i + 1) % 3 },
+      { key: i + '-2', id: ['zuppa', 'salmone', 'pollo', 'farro', 'riso', 'pasta'][(i + 2) % 6], moment: 'Cena', ora: '20:' + pad((i * 13) % 45 + 5), face: i % 4 === 0 ? -1 : (i + 2) % 3 }
+    ];
+  }
+  mealsOf(i) {
+    const extra = this.state.added[i] || [];
+    return this.dayMeals(i).concat(extra).filter((m) => !this.state.removed[m.key]);
+  }
+
+  clampPy(liv, py) {
+    let min = 0;
+    if (liv === 'settimana') min = -(200 + 27 * 88 - 600);
+    if (liv === 'mese') min = -(230 + 3 * 160 - 600);
+    if (liv === 'anno') min = -(240 + 3 * 170 - 600);
+    return Math.max(min, Math.min(0, py));
+  }
+  // Passaggio fra livelli: la vista vecchia si avvicina o si allontana e sfuma, la nuova arriva dal lato opposto
+  goTo(liv, extra, dir) {
+    if (this.busy) return;
+    this.busy = true;
+    const out = dir > 0 ? 1.5 : (dir < 0 ? 0.7 : 1);
+    const inn = dir > 0 ? 0.75 : (dir < 0 ? 1.4 : 1);
+    this.setState({ tr: 'transform 220ms ease-in, opacity 200ms', sc: out, op: 0, sheet: null });
+    this.later(220, () => this.setState({ liv, ...extra, tr: 'none', sc: inn, op: 0 }));
+    this.later(260, () => this.setState({ tr: 'transform 420ms cubic-bezier(.2,.9,.25,1), opacity 320ms', sc: 1, op: 1 }));
+    this.later(720, () => { this.busy = false; this.setState({ tr: 'none' }); });
+  }
+  openDay(i) { this.goTo('giorno', { day: i, selDay: i, px: 0, py: 0 }, 1); }
+  focusDay(i) { return this.clampPy('settimana', 422 - (200 + i * 88)); }
+  focusWeek(w) { return this.clampPy('mese', 422 - (230 + w * 160)); }
+  nearestDay() { return Math.max(0, Math.min(27, Math.round((422 - this.state.py - 200) / 88))); }
+  nearestWeek() { return Math.max(0, Math.min(3, Math.round((422 - this.state.py - 230) / 160))); }
+  // Il pizzico entra verso ciò che sta al centro dello schermo
+  zoomIn() {
+    const liv = this.state.liv;
+    if (liv === 'anno') this.goTo('mese', { px: 0, py: 0 }, 1);
+    else if (liv === 'mese') this.goTo('settimana', { px: 0, py: this.focusDay(this.nearestWeek() * 7 + 3) }, 1);
+    else if (liv === 'settimana') this.openDay(this.nearestDay());
+  }
+  // Il pulsante avanti entra verso il giorno scelto prima o, se non ce n'è uno, verso il più recente
+  zoomInTarget() {
+    const liv = this.state.liv;
+    const day = this.state.selDay !== null ? this.state.selDay : 0;
+    if (liv === 'anno') this.goTo('mese', { px: 0, py: this.focusWeek(Math.floor(day / 7)) }, 1);
+    else if (liv === 'mese') this.goTo('settimana', { px: 0, py: this.focusDay(day) }, 1);
+    else if (liv === 'settimana') this.openDay(day);
+  }
+  zoomOut() {
+    const liv = this.state.liv;
+    if (liv === 'giorno') this.goTo('settimana', { px: 0, py: this.focusDay(this.state.day) }, -1);
+    else if (liv === 'settimana') this.goTo('mese', { px: 0, py: this.focusWeek(Math.floor(this.nearestDay() / 7)) }, -1);
+    else if (liv === 'mese') this.goTo('anno', { px: 0, py: 0 }, -1);
+  }
+
+  // Il filo in miniatura dentro una sfera da 104 punti, ingrandita di k: la stessa onda della pagina dei giorni,
+  // rimpicciolita; quattro pallini e sotto i primi tre, più piccoli, di quelli che seguono
+  miniS(k) {
+    const at = (i, y) => ({ x: (52 + 20 * Math.sin(i * 0.85 + 0.6)) * k, y: y * k });
+    const dots = [0, 1, 2, 3].map((i) => at(i, 18 + i * 18));
+    const more = [4, 5, 6].map((i) => at(i, 84 + (i - 4) * 6));
+    return {
+      path: this.pieces(dots).join(' '),
+      tail: this.pieces([dots[3]].concat(more)).join(' '),
+      dots, more
+    };
+  }
+
+  // Curva morbida che passa per tutti i punti (Catmull-Rom convertita in Bézier), un tratto per coppia di punti
+  pieces(pts) {
+    const f = (v) => v.toFixed(1);
+    const out = [];
+    for (let k = 0; k < pts.length - 1; k++) {
+      const p0 = pts[k - 1] || pts[k], p1 = pts[k], p2 = pts[k + 1], p3 = pts[k + 2] || p2;
+      out.push('M' + f(p1.x) + ' ' + f(p1.y) + ' C' + f(p1.x + (p2.x - p0.x) / 6) + ' ' + f(p1.y + (p2.y - p0.y) / 6) + ' ' +
+        f(p2.x - (p3.x - p1.x) / 6) + ' ' + f(p2.y - (p3.y - p1.y) / 6) + ' ' + f(p2.x) + ' ' + f(p2.y));
+    }
+    return out;
+  }
+
+  renderVals() {
+    const dark = this.props.scuro ?? false;
+    const c = dark ? {
+      bg: '#151515', bgClear: 'rgba(21,21,21,0)', text: '#EDECE8', muted: '#A6A49E', card: '#222220', cardRing: '#31302D',
+      pill: '#222220', pillRing: '#32312E', pillActive: '#33322F', avatar: '#E9C9A8', avatarText: '#3A2614',
+      shadow: 'rgba(0,0,0,.45)', sphereShadow: 'rgba(0,0,0,.4)', thread: 'rgba(237,236,232,.30)', dash: '#5A5954',
+      ringToday: '#EDECE8', sheet: '#1E1E1C', scrim: 'rgba(0,0,0,.5)', danger: '#FF9C8C', dangerBg: '#3A1D1A', ink: '#151515',
+      twig: '#FF9A5A', flameText: '#FFB27A', greyNum: '#2A2927', innerThread: 'rgba(21,21,21,.45)', dotRing: 'rgba(21,21,21,.4)',
+      base: [237, 236, 232, 0.28], flame: [255, 138, 64, 1],
+      v: { buono: ['#9DF2BC', '#22A653'], medio: ['#FFE88A', '#E5A800'], basso: ['#FFB4A8', '#E2453A'], none: ['#9A9893', '#5E5C58'] }
+    } : {
+      bg: '#FCFCFB', bgClear: 'rgba(252,252,251,0)', text: '#151515', muted: '#5E5C57', card: '#F5F3EF', cardRing: '#ECE8E1',
+      pill: '#FFFFFF', pillRing: '#E7E4DE', pillActive: '#EFECE6', avatar: '#3A2614', avatarText: '#F6E7D6',
+      shadow: 'rgba(21,21,21,.08)', sphereShadow: 'rgba(21,21,21,.14)', thread: 'rgba(21,21,21,.24)', dash: '#C9C4BA',
+      ringToday: '#151515', sheet: '#FFFFFF', scrim: 'rgba(21,21,21,.28)', danger: '#B3402F', dangerBg: '#FBEAE6', ink: '#1E1D1B',
+      twig: '#F07A3A', flameText: '#C2531B', greyNum: '#3A3936', innerThread: 'rgba(255,255,255,.85)', dotRing: 'rgba(255,255,255,.9)',
+      base: [21, 21, 21, 0.22], flame: [244, 108, 38, 1],
+      v: { buono: ['#B6F5C9', '#2DBE60'], medio: ['#FFF0A6', '#F7B500'], basso: ['#FFC2B8', '#F0473A'], none: ['#F1EFEB', '#C3BFB7'] }
+    };
+    const st = this.state;
+    const days = this._days;
+    const lib = this.lib();
+    const t = st.t;
+    // Le sfere si spostano di pochi punti: restano facili da toccare
+    const off = (i, a) => ({ x: a * Math.sin(t * 0.55 + i * 1.9), y: a * Math.cos(t * 0.45 + i * 2.7) });
+    const sphereBg = (v) => (v === 'missing' ? 'transparent' : 'radial-gradient(circle at 34% 28%, ' + c.v[v][0] + ', ' + c.v[v][1] + ' 74%)');
+    // Comparsa dal basso: un elemento compare quando l'entrata arriva al suo turno
+    const ap = (rank) => (st.intro > rank ? { o: 1, dy: 0 } : { o: 0, dy: 40 });
+    const ignore = () => this._dragged;
+    const mix = (k) => {
+      const a = c.base, b = c.flame;
+      const ch = (j) => a[j] + (b[j] - a[j]) * k;
+      return 'rgba(' + Math.round(ch(0)) + ',' + Math.round(ch(1)) + ',' + Math.round(ch(2)) + ',' + ch(3).toFixed(2) + ')';
+    };
+
+    // Livello dei giorni
+    const pts = days.map((d) => {
+      const bx = 195 + 92 * Math.sin(d.i * 0.85 + 0.6), by = 200 + d.i * 88;
+      const o = off(d.i, 3);
+      return { bx, by, x: bx + o.x, y: by + o.y };
+    });
+    const visRank = (i) => (i <= 7 ? 7 - i : 0);
+    const wkDays = days.map((d) => {
+      const p = pts[d.i];
+      const r = d.missing ? 18 : (d.i === 0 ? 30 : 25);
+      const right = p.bx < 195;
+      const run = this.runOf(d.i);
+      let mkText = '';
+      let mkTwig = false;
+      if (run && run.len >= 3 && d.i === run.start) { mkText = 'Inizio serie'; mkTwig = true; }
+      if (run && run.len >= 3 && d.i === run.end) { mkText = run.len + ' giorni'; mkTwig = false; }
+      const hasMark = mkText !== '';
+      return {
+        ...ap(visRank(d.i)),
+        l: p.x - r, t: p.y - r, size: 2 * r,
+        bg: sphereBg(d.v),
+        border: d.missing ? '2px dashed ' + c.dash : 'none',
+        shadow: d.missing ? 'none' : (d.i === 0 ? '0 0 0 4px ' + c.bg + ', 0 0 0 6px ' + c.ringToday + ', 0 8px 18px ' + c.sphereShadow : '0 8px 18px ' + c.sphereShadow),
+        lx: right ? p.x + r + 12 : p.x - r - 132, ly: hasMark ? p.y - 26 : p.y - 10, align: right ? 'left' : 'right',
+        label: d.i === 0 ? 'Oggi' : d.wd + ' ' + d.n,
+        labelColor: d.missing ? c.muted : c.text,
+        hasMark, mkText, mkTwig,
+        mkL: right ? p.x + r + 6 : p.x - r - 156, mkT: p.y - 4, mkDir: right ? 'row' : 'row-reverse',
+        aria: (d.i === 0 ? 'Oggi, ' : '') + d.wdFull + ' ' + d.n + ' ' + d.mese + (d.missing ? ', nessun pasto' : ''),
+        open: () => { if (!ignore()) this.openDay(d.i); }
+      };
+    });
+    // Il filo lega solo i giorni di fila e si scalda verso il colore della fiamma, al massimo dopo 14 giorni
+    const segs = [];
+    this._runs.forEach((run) => {
+      const idx = [];
+      for (let i = run.end; i <= run.start; i++) idx.push(i);
+      const ps = this.pieces(idx.map((i) => pts[i]));
+      ps.forEach((d, k) => {
+        const newer = idx[k];
+        const k14 = Math.min(run.start - newer, 14) / 14;
+        const shown = st.intro > visRank(newer) && st.intro > visRank(newer + 1);
+        segs.push({ d, color: mix(k14), width: (1.6 + 1.8 * k14).toFixed(2), o: shown ? 1 : 0 });
+      });
+    });
+    // Serie in corso: per ora nessun segno su oggi; il modo di mostrarla è da trovare
+    const active = this._runs.find((r) => r.active && r.len >= 2);
+
+    // Livello delle settimane: fiammella colorata se la serie copre la settimana o è in corso, in bianco e nero se si è spezzata
+    const ords = [4, 3, 2, 1];
+    const ranges = ['19 – 25 ott', '12 – 18 ott', '5 – 11 ott', '28 set – 4 ott'];
+    const mPts = [];
+    const weeks = [0, 1, 2, 3].map((w) => {
+      const bx = 195 + 70 * Math.sin(w * 1.2 + 0.5), by = 230 + w * 160;
+      const o = off(w + 20, 2.5);
+      const x = bx + o.x, y = by + o.y;
+      mPts.push({ x, y });
+      const ds = days.slice(w * 7, w * 7 + 7);
+      const counts = { buono: 0, medio: 0, basso: 0, none: 0 };
+      ds.forEach((d) => { if (!d.missing) counts[d.v] += 1; });
+      const mode = ['buono', 'medio', 'basso', 'none'].reduce((a, b) => (counts[b] > counts[a] ? b : a), 'buono');
+      let best = 0, cur = 0;
+      ds.slice().reverse().forEach((d) => { if (d.missing) cur = 0; else { cur += 1; best = Math.max(best, cur); } });
+      const whole = best === 7;
+      const lit = whole || (w === 0 && !!active);
+      const right = bx < 195;
+      // Filo in miniatura: i quattro giorni più recenti su una S morbida; sotto, una nuova S appena iniziata
+      const sw = this.miniS(1);
+      const inner = ds.slice(0, 4).map((d, k) => ({ ...sw.dots[k], missing: d.missing, v: d.v }));
+      const moreW = ds.length > 4 ? sw.more : [];
+      return {
+        ...ap(3 - w),
+        l: x - 52, t: y - 52, mode,
+        mini: sw.path,
+        tail: moreW.length ? sw.tail : '',
+        more: moreW.map((pt) => ({ l: pt.x - 2.5, t: pt.y - 2.5 })),
+        dots: inner.map((pt) => ({
+          l: pt.x - 6, t: pt.y - 6,
+          bg: pt.missing ? 'transparent' : c.v[pt.v][1],
+          ring: pt.missing ? 'inset 0 0 0 1.5px ' + c.dash : '0 0 0 1.5px ' + c.dotRing
+        })),
+        bg: sphereBg(mode),
+        lx: right ? x + 64 : x - 204, ly: y - 26, align: right ? 'flex-start' : 'flex-end',
+        ord: ords[w], range: ranges[w],
+        count: whole ? 7 : best,
+        flameFilter: lit ? 'none' : 'grayscale(1)',
+        numColor: lit ? c.flameText : c.greyNum,
+        aria: ords[w] + 'a settimana, ' + ranges[w],
+        open: () => { if (!ignore()) this.goTo('settimana', { px: 0, py: this.focusDay(w * 7 + 3) }, 1); }
+      };
+    });
+    const mesePath = this.pieces(mPts).join(' ');
+
+    // Livello dei mesi: ottobre viene dai dati dell'esempio, gli altri sono riassunti di esempio
+    const monthData = [
+      { name: 'Ottobre', v: 'buono', longest: 16, weeks: weeks.map((w) => w.mode) },
+      { name: 'Settembre', v: 'medio', longest: 11, weeks: ['basso', 'medio', 'buono', 'medio'] },
+      { name: 'Agosto', v: 'buono', longest: 31, weeks: ['buono', 'buono', 'medio', 'buono', 'buono'] },
+      { name: 'Luglio', v: 'basso', longest: 4, weeks: ['basso', 'none', 'medio', 'basso'] }
+    ];
+    const yPts = [];
+    const months = monthData.map((m, k) => {
+      const bx = 195 + 64 * Math.sin(k * 1.2 + 0.9), by = 240 + k * 170;
+      const o = off(k + 40, 2.5);
+      const x = bx + o.x, y = by + o.y;
+      yPts.push({ x, y });
+      const right = bx < 195;
+      // Filo in miniatura: le quattro settimane più recenti su una S morbida; sotto, se ce ne sono altre, una nuova S appena iniziata
+      const sm = this.miniS(116 / 104);
+      const inner = m.weeks.slice(0, 4).map((wv, j) => ({ ...sm.dots[j], v: wv }));
+      const moreM = m.weeks.length > 4 ? sm.more : [];
+      return {
+        ...ap(3 - k),
+        l: x - 58, t: y - 58,
+        mini: sm.path,
+        tail: moreM.length ? sm.tail : '',
+        more: moreM.map((pt) => ({ l: pt.x - 2.5, t: pt.y - 2.5 })),
+        dots: inner.map((pt) => ({ l: pt.x - 7, t: pt.y - 7, bg: c.v[pt.v][1] })),
+        bg: sphereBg(m.v),
+        lx: right ? x + 70 : x - 200, ly: y - 22, align: right ? 'flex-start' : 'flex-end',
+        label: m.name,
+        maxText: 'Max ' + m.longest + ' gg',
+        aria: m.name + ', serie più lunga ' + m.longest + ' giorni',
+        open: () => { if (!ignore()) this.goTo('mese', { px: 0, py: 0 }, 1); }
+      };
+    });
+    const annoPath = this.pieces(yPts).join(' ');
+
+    // Livello del singolo giorno
+    const day = days[st.day];
+    // Nel singolo giorno le sfere stanno ferme
+    const mx = 195, my = 210;
+    const olderD = st.day < 27 ? days[st.day + 1] : null;
+    const newerD = st.day > 0 ? days[st.day - 1] : null;
+    const peek = (d, x, y) => ({ l: x - 26, t: y - 26, n: d.n, ink: d.missing ? c.muted : c.ink, bg: sphereBg(d.v), border: d.missing ? '2px dashed ' + c.dash : 'none' });
+    const meals = this.mealsOf(st.day);
+    const cards = meals.map((m, k) => {
+      const lm = lib[m.id];
+      const f = st.faces[m.key] !== undefined ? st.faces[m.key] : m.face;
+      return {
+        ...lm,
+        ...ap(2 + k),
+        top: 320 + k * 90,
+        sub: m.moment + ' · ' + m.ora + ' · ' + lm.qty,
+        aria: m.moment + ', ' + lm.name + ', alle ' + m.ora,
+        isF0: f === 0, isF1: f === 1, isF2: f === 2, isNone: f < 0,
+        open: () => { if (!ignore()) this.setState({ sheet: { kind: 'meal', key: m.key } }); }
+      };
+    });
+
+    const sheet = st.sheet;
+    const sel = sheet && sheet.kind === 'meal' ? meals.find((m) => m.key === sheet.key) : null;
+    const selFace = sel ? (st.faces[sel.key] !== undefined ? st.faces[sel.key] : sel.face) : -1;
+    const sf = (i) => ({
+      s: selFace === i ? 1.15 : 1,
+      o: selFace >= 0 && selFace !== i ? 0.45 : 1,
+      pick: () => { const faces = { ...st.faces }; faces[sel.key] = i; this.setState({ faces }); }
+    });
+    const dayName = day.wdFull.toLowerCase() + ' ' + day.n + ' ' + day.mese;
+    const addIds = ['pasta', 'farro', 'zuppa', 'salmone'];
+    const upAria = { giorno: 'Torna ai giorni', settimana: 'Torna alle settimane', mese: 'Torna ai mesi' }[st.liv] || 'Sei già ai mesi';
+    const downAria = { anno: 'Vai alle settimane', mese: 'Vai ai giorni', settimana: 'Apri il giorno' }[st.liv] || 'Sei già nel giorno';
+    const canBack = st.liv !== 'anno', canFwd = st.liv !== 'giorno';
+
+    return {
+      c, upAria, downAria, rootRef: this.rootRef,
+      zoomOut: () => this.zoomOut(),
+      zoomInBtn: () => this.zoomInTarget(),
+      backOp: canBack ? 1 : 0.35, backPointer: canBack ? 'auto' : 'none', backDisabled: canBack ? 'false' : 'true',
+      fwdOp: canFwd ? 1 : 0.35, fwdPointer: canFwd ? 'auto' : 'none', fwdDisabled: canFwd ? 'false' : 'true',
+      isAnno: st.liv === 'anno', isMese: st.liv === 'mese', isSettimana: st.liv === 'settimana', isGiorno: st.liv === 'giorno',
+      px: st.px, py: st.py, sc: st.sc, op: st.op, tr: st.tr,
+      ox: 195 - st.px, oy: 422 - st.py,
+      threadOp: st.intro > 4 ? 1 : 0,
+      months, annoPath, weeks, mesePath, wkDays, segs,
+      levelName: { anno: 'Mesi', mese: 'Settimane', settimana: 'Giorni', giorno: 'Giorno' }[st.liv],
+      main: {
+        l: mx - 62, t: my - 62, n: day.n, wd: day.wd,
+        bg: sphereBg(day.v),
+        border: day.missing ? '2px dashed ' + c.dash : 'none',
+        shadow: day.missing ? 'none' : '0 14px 32px ' + c.sphereShadow,
+        ink: day.missing ? c.muted : c.ink
+      },
+      mainAp: ap(0),
+      peekOp: st.intro > 1 ? 0.8 : 0,
+      plus: { l: mx + 30, t: my + 36 },
+      hasOlder: !!olderD, hasNewer: !!newerD,
+      older: olderD ? peek(olderD, 50, 210) : { l: 0, t: 0, n: '', ink: c.ink, bg: 'transparent', border: 'none' },
+      newer: newerD ? peek(newerD, 340, 210) : { l: 0, t: 0, n: '', ink: c.ink, bg: 'transparent', border: 'none' },
+      olderAria: olderD ? 'Vai a ' + olderD.wdFull.toLowerCase() + ' ' + olderD.n : '',
+      newerAria: newerD ? 'Vai a ' + newerD.wdFull.toLowerCase() + ' ' + newerD.n : '',
+      goOlder: () => this.goTo('giorno', { day: Math.min(27, st.day + 1), selDay: Math.min(27, st.day + 1) }, 0),
+      goNewer: () => this.goTo('giorno', { day: Math.max(0, st.day - 1), selDay: Math.max(0, st.day - 1) }, 0),
+      cards,
+      noMeals: cards.length === 0,
+      addAria: 'Registra un pasto in ' + dayName,
+      openAdd: () => this.setState({ sheet: { kind: 'add' } }),
+      showMealSheet: !!sel,
+      showAddSheet: !!(sheet && sheet.kind === 'add'),
+      sm: sel ? { ...lib[sel.id], ora: sel.ora, when: sel.moment + ' · ' + dayName } : { ...lib.pasta, ora: '', when: '' },
+      sf0: sf(0), sf1: sf(1), sf2: sf(2),
+      undoMeal: () => { const removed = { ...st.removed }; removed[sel.key] = true; this.setState({ removed, sheet: null }); },
+      closeSheet: () => this.setState({ sheet: null }),
+      addWhen: 'In ' + dayName + ', alle 13:00',
+      addList: addIds.map((id, k) => ({
+        ...lib[id],
+        pick: () => {
+          const added = { ...st.added };
+          const list = (added[st.day] || []).slice();
+          list.push({ key: st.day + '-a' + list.length + '-' + k, id, moment: 'Pranzo', ora: '13:00', face: -1 });
+          added[st.day] = list;
+          this.setState({ added, sheet: null });
+        }
+      })),
+      pillY: st.pill ? 0 : 14, pillSX: st.pill ? 1 : 0.18, pillSY: st.pill ? 1 : 0.5,
+      pillOp: st.pill ? 1 : 0, pillPointer: st.pill ? 'auto' : 'none', pillHidden: st.pill ? 'false' : 'true',
+      pillDelay: st.pill ? '140ms' : '0ms',
+      bub: {
+        o: !st.pill && st.intro > 8 ? 1 : 0, s: st.pill ? 0.35 : 1, y: st.pill ? 16 : 0,
+        pe: st.pill ? 'none' : 'auto', delay: st.pill ? '0ms' : '320ms',
+        left: { destra: 326, sinistra: 20, centro: 173 }[this.props.maniglia ?? 'destra']
+      },
+      pillOrigin: { destra: '90% 100%', sinistra: '10% 100%', centro: '50% 100%' }[this.props.maniglia ?? 'destra'],
+      openPill: () => this.showPill(),
+      onWheel: (e) => {
+        this.hidePill();
+        if (e.ctrlKey) {
+          // Il pizzico sul touchpad arriva come rotellina con il tasto Ctrl
+          if (e.deltaY < 0) this.zoomIn(); else this.zoomOut();
+        } else if (st.liv !== 'giorno') {
+          this.setState({ py: this.clampPy(st.liv, st.py - e.deltaY) });
+        }
+      },
+      onDown: (e) => {
+        this.ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+        this.frozen = true;
+        this._dragged = false;
+        this._start = { x: e.clientX, y: e.clientY };
+        // Qualunque tocco sulla mappa richiude la pillola
+        this._pillAtDown = this.state.pill;
+        this.hidePill();
+        const ids = Object.keys(this.ptrs);
+        if (ids.length === 2) {
+          const a = this.ptrs[ids[0]], b = this.ptrs[ids[1]];
+          this.pinch0 = Math.hypot(a.x - b.x, a.y - b.y);
+        }
+      },
+      onMove: (e) => {
+        const p = this.ptrs[e.pointerId];
+        if (!p) return;
+        const ids = Object.keys(this.ptrs);
+        if (ids.length === 2) {
+          p.x = e.clientX; p.y = e.clientY;
+          const a = this.ptrs[ids[0]], b = this.ptrs[ids[1]];
+          if (this.pinch0) {
+            const ratio = Math.hypot(a.x - b.x, a.y - b.y) / this.pinch0;
+            if (ratio > 1.3) { this.pinch0 = null; this._dragged = true; this.zoomIn(); }
+            else if (ratio < 0.77) { this.pinch0 = null; this._dragged = true; this.zoomOut(); }
+          }
+          return;
+        }
+        const dx = e.clientX - p.x, dy = e.clientY - p.y;
+        p.x = e.clientX; p.y = e.clientY;
+        if (Math.abs(e.clientX - this._start.x) + Math.abs(e.clientY - this._start.y) > 8) this._dragged = true;
+        if (this._dragged && this.state.liv !== 'giorno' && !this.busy) {
+          this.setState({
+            px: Math.max(-40, Math.min(40, this.state.px + dx)),
+            py: this.clampPy(this.state.liv, this.state.py + dy)
+          });
+        }
+      },
+      onUp: (e) => {
+        // Un tocco nel vuoto, senza trascinare, mostra la pillola se era nascosta
+        const onControl = e.target && e.target.closest && e.target.closest('button, a');
+        if (!this._dragged && Object.keys(this.ptrs).length === 1 && !onControl && !this._pillAtDown) this.showPill();
+        delete this.ptrs[e.pointerId];
+        const n = Object.keys(this.ptrs).length;
+        if (n < 2) this.pinch0 = null;
+        if (n === 0) this.frozen = false;
+      },
+      onCancel: (e) => {
+        delete this.ptrs[e.pointerId];
+        const n = Object.keys(this.ptrs).length;
+        if (n < 2) this.pinch0 = null;
+        if (n === 0) this.frozen = false;
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>DietNGo, nuovo pasto</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div ref="{{rootRef}}" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: {{c.bg}}; color: {{c.text}}; font-family: Figtree, 'Segoe UI', system-ui, sans-serif">
+
+  <!-- Barra in alto: indietro, titolo e, per un pasto nuovo, salva; in modifica il salvataggio è automatico -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 104px; z-index: 50; box-sizing: border-box; padding: 48px 16px 0; display: flex; align-items: center; justify-content: space-between; opacity: {{s0.o}}; transform: translateX({{s0.x}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+    <a href="Main.dc.html" aria-label="Indietro" style="width: 44px; height: 44px; border-radius: 50%; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </a>
+    <div style="display: flex; flex-direction: column; align-items: center">
+      <div style="font-size: 17px; font-weight: 700">{{title}}</div>
+      <div role="status" style="height: 16px; font-size: 12px; font-weight: 600; color: {{c.ok}}; opacity: {{savedOp}}; transition: opacity 300ms">Salvato</div>
+    </div>
+    <sc-if value="{{isNew}}" hint-placeholder-val="{{ true }}">
+      <a href="Main.dc.html" aria-disabled="{{saveDisabled}}" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{c.text}}; color: {{c.bg}}; display: flex; align-items: center; text-decoration: none; font-size: 15px; font-weight: 700; opacity: {{saveOp}}; pointer-events: {{savePointer}}">Salva</a>
+    </sc-if>
+    <sc-if value="{{modifica}}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{askDelete}}" aria-label="Elimina il pasto" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"></path></svg>
+      </button>
+    </sc-if>
+  </div>
+
+  <!-- La scena: il piano del tavolo e il vassoio. Entrata: si muove la camera, quindi si muovono insieme tavolo e vassoio;
+       parte dall'alto con il piatto in basso, si avvicina scendendo e girando verso destra, poi si ferma e gira solo il piatto -->
+  <div aria-hidden="true" style="position: absolute; left: -15px; top: -14px; width: 420px; height: 420px; transform: translateY({{cam.y}}px) perspective(800px) rotateX({{cam.tilt}}deg) rotateZ({{cam.orbit}}deg) scale({{cam.dist}})">
+    <div style="position: absolute; inset: 0; border-radius: 50%; background-image: radial-gradient(circle, {{c.groundDot}} 1.3px, rgba(0,0,0,0) 1.7px); background-size: 20px 20px; -webkit-mask-image: radial-gradient(circle, #000 28%, rgba(0,0,0,0) 68%); mask-image: radial-gradient(circle, #000 28%, rgba(0,0,0,0) 68%)"></div>
+    <div style="position: absolute; left: 112px; top: 118px; width: 196px; height: 196px; border-radius: 60px; background: {{c.floorShadow}}; filter: blur(14px)"></div>
+    <div style="position: absolute; left: 120px; top: 120px; width: 180px; height: 180px; transform: rotateZ({{cam.spin}}deg)">
+    <div style="position: absolute; inset: 0; border-radius: 50px; background: radial-gradient(circle at 40% 35%, {{c.trayIn}}, {{c.trayOut}}); box-shadow: inset 0 0 0 1px {{c.trayRing}}, inset 0 -8px 20px {{c.trayDeep}}"></div>
+    <div style="position: absolute; left: 21px; top: 21px; width: 138px; height: 138px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, {{c.plateIn}}, {{c.plateOut}}); box-shadow: 0 6px 14px {{c.plateShadow}}, inset 0 -4px 10px {{c.plateDeep}}"></div>
+    <div style="position: absolute; left: 43px; top: 43px; width: 94px; height: 94px; border-radius: 50%; box-shadow: inset 0 0 0 1px {{c.plateLine}}"></div>
+    <!-- Visto dall'alto il cibo è disegnato sul piatto; poi lascia il posto all'immagine in piedi -->
+    <svg viewBox="0 0 130 130" width="100" height="100" style="position: absolute; left: 40px; top: 40px; opacity: {{topFoodOp}}">
+      <circle cx="65" cy="65" r="50" fill="{{il.f2}}"></circle>
+      <circle cx="65" cy="62" r="26" fill="{{il.f3}}"></circle>
+      <circle cx="40" cy="48" r="9" fill="{{il.f4}}"></circle>
+      <circle cx="88" cy="44" r="8" fill="{{il.f5}}"></circle>
+      <circle cx="92" cy="86" r="9" fill="{{il.f4}}"></circle>
+      <circle cx="44" cy="90" r="8" fill="{{il.f3}}"></circle>
+    </svg>
+    <span style="position: absolute; left: 40px; top: 40px; width: 100px; height: 100px; border-radius: 50%; background: {{photoBg}}; opacity: {{topPhotoOp}}"></span>
+    </div>
+  </div>
+  <!-- L'immagine resta in piedi sul piatto, rivolta verso chi guarda, mentre il piatto gira sotto -->
+  <div aria-hidden="true" style="position: absolute; left: 120px; top: 108px; width: 150px; height: 112px; transform: translateY({{cam.y}}px) scale({{cam.dist}}); transform-origin: 75px 88px; opacity: {{sideOp}}">
+    <sc-if value="{{noPhoto}}" hint-placeholder-val="{{ true }}">
+      <svg viewBox="0 0 120 90" width="150" height="112">
+        <path d="M14 44h92c0 22-20 36-46 36S14 66 14 44z" fill="{{il.f1}}"></path>
+        <path d="M26 54c3 9 9 15 17 19" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"></path>
+        <ellipse cx="60" cy="44" rx="46" ry="11" fill="{{il.f1d}}"></ellipse>
+        <path d="M20 44c4-16 20-25 40-25s36 9 40 25c-8 6-72 6-80 0z" fill="{{il.f2}}"></path>
+        <circle cx="44" cy="34" r="8" fill="{{il.f3}}"></circle>
+        <circle cx="72" cy="31" r="7" fill="{{il.f4}}"></circle>
+        <circle cx="60" cy="24" r="6" fill="{{il.f3}}"></circle>
+        <circle cx="56" cy="40" r="5" fill="{{il.f5}}"></circle>
+        <circle cx="84" cy="40" r="4.5" fill="{{il.f5}}"></circle>
+      </svg>
+    </sc-if>
+    <sc-if value="{{hasPhoto}}" hint-placeholder-val="{{ false }}">
+      <span style="position: absolute; left: 25px; top: -8px; width: 100px; height: 100px; box-sizing: border-box; border-radius: 50%; border: 4px solid {{c.photoRing}}; background: {{photoBg}}; box-shadow: 0 10px 22px {{c.plateShadow}}"></span>
+    </sc-if>
+  </div>
+  <button onClick="{{openImg}}" aria-label="Immagine del pasto: foto o galleria" style="all: unset; cursor: pointer; position: absolute; left: 298px; top: 228px; width: 44px; height: 44px; border-radius: 50%; background: {{c.sheet}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 6px 16px {{c.shadow}}; display: flex; align-items: center; justify-content: center; opacity: {{s1.o}}; transition: opacity 420ms">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"></path><circle cx="12" cy="12.5" r="3.5"></circle></svg>
+  </button>
+
+  <!-- Nome: proposto dall'app, come il titolo automatico di una chat, oppure scritto dall'utente -->
+  <div style="position: absolute; left: 24px; right: 24px; top: 296px; text-align: center; opacity: {{s1.o}}; transform: translateX({{s1.x}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+    <input type="text" value="{{nameValue}}" onChange="{{onName}}" placeholder="Nome del pasto" aria-label="Nome del pasto" style="box-sizing: border-box; width: 100%; height: 40px; border: none; outline: none; background: transparent; text-align: center; font: inherit; font-size: 22px; font-weight: 700; letter-spacing: -.01em; color: {{c.text}}">
+    <div style="font-size: 13px; color: {{c.muted}}">{{nameHint}}</div>
+  </div>
+
+  <!-- Sezioni: pallini con il titolo sotto; cambiando sezione il pallino attivo si allunga verso la destinazione. Restano fermi in alto con il piatto -->
+  <div role="tablist" aria-label="Sezioni del pasto" style="position: absolute; left: 45px; top: 368px; width: 300px; height: 64px; display: flex; opacity: {{s2.o}}; transform: translateX({{s2.x}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
+    <span aria-hidden="true" style="position: absolute; left: {{worm.l}}px; top: 8px; width: {{worm.w}}px; height: 16px; border-radius: 8px; background: {{c.text}}; transition: {{worm.tr}}"></span>
+    <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
+      <button role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="all: unset; cursor: pointer; width: 100px; height: 64px; display: flex; flex-direction: column; align-items: center; gap: 8px">
+        <span style="box-sizing: border-box; margin-top: 8px; width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 2.5px {{c.dotOff}}"></span>
+        <span style="font-size: 14px; font-weight: {{tb.weight}}; color: {{tb.color}}">{{tb.label}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <!-- Solo la sezione sotto scorre, quando il contenuto è tanto -->
+  <div style="position: absolute; left: 0; right: 0; top: 440px; bottom: 0; overflow: hidden; opacity: {{s3.o}}; transition: opacity 420ms">
+    <div style="position: absolute; inset: 0; opacity: {{cnt.o}}; transform: translateX({{cnt.x}}px); transition: {{cnt.tr}}">
+
+      <!-- Ingredienti: ricerca con il codice a barre, mosaico degli ingredienti e, staccato in basso, l'ingrediente personalizzato -->
+      <sc-if value="{{tabIngr}}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; left: 16px; right: 16px; top: 0; display: flex; gap: 10px">
+          <div style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border-radius: 18px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center">
+            <div style="flex: none; width: 46px; display: flex; justify-content: center">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>
+            </div>
+            <input type="text" value="{{query}}" onChange="{{onQuery}}" placeholder="Cerca pasti o ingredienti..." aria-label="Cerca pasti o ingredienti" style="flex: 1; min-width: 0; height: 48px; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; color: {{c.text}}">
+          </div>
+          <button onClick="{{startScan}}" aria-label="Leggi un codice a barre" style="all: unset; cursor: pointer; flex: none; width: 52px; height: 52px; border-radius: 50%; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"></path><path d="M8 8v8M11 8v8M14 8v8M17 8v8" stroke-width="1.6"></path></svg>
+          </button>
+        </div>
+        <div style="position: absolute; left: 16px; right: 16px; top: 64px; bottom: 100px; overflow-y: auto">
+          <sc-if value="{{noIngr}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 6px 8px; font-size: 15px; line-height: 1.4; color: {{c.muted}}">Cerca un pasto pronto, aggiungi gli ingredienti uno alla volta o leggi un codice a barre.</div>
+          </sc-if>
+          <!-- Mosaico: dal più vecchio in alto a sinistra al più recente in basso a destra; a pari data in ordine alfabetico -->
+          <div style="display: flex; flex-wrap: wrap; gap: 6px">
+            <sc-for list="{{mosaic}}" as="x" hint-placeholder-count="5">
+              <div style="flex: 1 1 auto; min-width: 104px; height: 60px; box-sizing: border-box; padding: 0 2px 0 14px; border-radius: 16px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; gap: 4px">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+                  <span style="font-size: 15px; font-weight: 600; white-space: nowrap">{{x.name}}</span>
+                  <span style="font-size: 13px; color: {{c.muted}}">{{x.qty}}</span>
+                </span>
+                <button onClick="{{x.remove}}" aria-label="Togli {{x.name}}" style="all: unset; cursor: pointer; flex: none; width: 40px; height: 44px; display: flex; align-items: center; justify-content: center">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="position: absolute; left: 16px; right: 16px; bottom: 24px; height: 64px; box-sizing: border-box; padding: 0 10px 0 18px; border-radius: 20px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: space-between">
+          <span style="font-size: 15px; font-weight: 600; line-height: 1.2">Ingrediente<br>personalizzato</span>
+          <button onClick="{{openCustom}}" aria-label="Aggiungi un ingrediente personalizzato" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: {{c.text}}; display: flex; align-items: center; justify-content: center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c.bg}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+        <sc-if value="{{showRes}}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; left: 16px; right: 16px; top: 60px; z-index: 30; box-sizing: border-box; padding: 10px 8px; border-radius: 24px; background: {{c.sheet}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}, 0 14px 34px {{c.shadowStrong}}; display: flex; flex-direction: column; gap: 2px">
+            <sc-if value="{{hasPronti}}" hint-placeholder-val="{{ true }}">
+              <div style="padding: 6px 12px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: {{c.muted}}">Pasti pronti</div>
+              <sc-for list="{{prontiRes}}" as="p" hint-placeholder-count="2">
+                <button onClick="{{p.pick}}" style="all: unset; cursor: pointer; min-height: 52px; padding: 6px 12px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center">
+                  <span style="font-size: 16px; font-weight: 600">{{p.name}}</span>
+                  <span style="font-size: 13px; color: {{c.muted}}">{{p.sub}}</span>
+                </button>
+              </sc-for>
+            </sc-if>
+            <div style="padding: 10px 12px 6px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: {{c.muted}}">Ingredienti</div>
+            <sc-for list="{{ingrRes}}" as="g" hint-placeholder-count="3">
+              <button onClick="{{g.pick}}" style="all: unset; cursor: pointer; min-height: 48px; padding: 6px 12px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+                <span style="font-size: 16px; font-weight: 600">{{g.name}}</span>
+                <span style="font-size: 14px; color: {{c.muted}}">{{g.sub}}</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- Quantità: una riga per ingrediente, grammi o pezzi -->
+      <sc-if value="{{tabQty}}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; left: 24px; right: 24px; top: 0; height: 28px; display: flex; align-items: baseline; justify-content: space-between">
+          <div style="font-size: 17px; font-weight: 700">Quantità</div>
+          <div style="font-size: 14px; color: {{c.muted}}">{{total}}</div>
+        </div>
+        <div style="position: absolute; left: 16px; right: 16px; top: 40px; bottom: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
+          <sc-if value="{{noIngr}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 6px 8px; font-size: 15px; color: {{c.muted}}">Aggiungi prima qualche ingrediente.</div>
+          </sc-if>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+            <div style="flex: none; box-sizing: border-box; height: 60px; padding: 0 8px 0 16px; border-radius: 20px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; gap: 6px">
+              <span style="flex: 1; min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+              <button onClick="{{r.minus}}" aria-label="Meno {{r.name}}" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+              </button>
+              <span style="min-width: 64px; text-align: center; font-size: 16px; font-weight: 700">{{r.qty}}</span>
+              <button onClick="{{r.plus}}" aria-label="Più {{r.name}}" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              </button>
+              <button onClick="{{r.toggleUnit}}" aria-label="Cambia unità di {{r.name}}" style="all: unset; cursor: pointer; height: 36px; min-width: 44px; padding: 0 10px; box-sizing: border-box; border-radius: 12px; background: {{c.sheet}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{r.unit}}</button>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- Valori: per il pasto intero oppure per singolo ingrediente, tutti facoltativi -->
+      <sc-if value="{{tabVal}}" hint-placeholder-val="{{ false }}">
+        <div role="group" aria-label="Valori per" style="position: absolute; left: 16px; right: 16px; top: 0; height: 44px; box-sizing: border-box; padding: 3px; border-radius: 22px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex">
+          <button onClick="{{modeMeal}}" aria-pressed="{{vmMeal.pressed}}" style="all: unset; cursor: pointer; flex: 1; border-radius: 19px; background: {{vmMeal.bg}}; color: {{vmMeal.fg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Pasto intero</button>
+          <button onClick="{{modeIngr}}" aria-pressed="{{vmIngr.pressed}}" style="all: unset; cursor: pointer; flex: 1; border-radius: 19px; background: {{vmIngr.bg}}; color: {{vmIngr.fg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Per ingrediente</button>
+        </div>
+        <sc-if value="{{valMeal}}" hint-placeholder-val="{{ true }}">
+          <div style="position: absolute; left: 24px; right: 24px; top: 58px; font-size: 14px; color: {{c.muted}}">{{perWeight}}</div>
+          <div style="position: absolute; left: 16px; right: 16px; top: 84px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+            <sc-for list="{{nutri}}" as="v" hint-placeholder-count="4">
+              <label style="box-sizing: border-box; height: 78px; padding: 10px 16px; border-radius: 22px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+                <span style="font-size: 13px; color: {{c.muted}}">{{v.label}}</span>
+                <span style="display: flex; align-items: baseline; gap: 4px">
+                  <input type="text" inputmode="decimal" value="{{v.value}}" onChange="{{v.onInput}}" aria-label="{{v.label}}" style="width: 90px; min-width: 0; border: none; outline: none; background: transparent; padding: 0; font: inherit; font-size: 22px; font-weight: 700; color: {{c.text}}">
+                  <span style="font-size: 14px; font-weight: 600; color: {{c.muted}}">{{v.unit}}</span>
+                </span>
+              </label>
+            </sc-for>
+          </div>
+          <div style="position: absolute; left: 24px; right: 24px; top: 268px; font-size: 13px; line-height: 1.4; color: {{c.muted}}">{{mealValHint}}</div>
+        </sc-if>
+        <sc-if value="{{valIngr}}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; left: 16px; right: 16px; top: 58px; bottom: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
+            <sc-for list="{{ingrVals}}" as="iv" hint-placeholder-count="4">
+              <div style="flex: none; box-sizing: border-box; min-height: 64px; padding: 8px 8px 8px 16px; border-radius: 20px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; gap: 10px">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 15px; font-weight: 600">{{iv.name}} <span style="font-weight: 500; color: {{c.muted}}">· {{iv.qty}}</span></span>
+                  <span style="font-size: 13px; color: {{c.muted}}">{{iv.line}}</span>
+                </span>
+                <button onClick="{{iv.edit}}" aria-label="{{iv.aria}}" style="all: unset; cursor: pointer; flex: none; height: 40px; padding: 0 12px; border-radius: 14px; background: {{c.sheet}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; align-items: center; font-size: 13px; font-weight: 700">{{iv.btn}}</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- Immagine del pasto: foto, galleria o illustrazione -->
+  <sc-if value="{{showImg}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 420">
+      <button onClick="{{closeImg}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="dialog" aria-label="Immagine del pasto" style="position: absolute; left: 8px; right: 8px; bottom: 8px; box-sizing: border-box; padding: 22px 12px 12px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 -8px 30px {{c.shadowStrong}}; display: flex; flex-direction: column; gap: 2px">
+        <div style="padding: 0 12px 12px; font-size: 19px; font-weight: 700">Immagine del pasto</div>
+        <button onClick="{{takePhoto}}" style="all: unset; cursor: pointer; height: 56px; padding: 0 12px; border-radius: 18px; display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.3-2h5l1.3 2h1.7A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"></path><circle cx="12" cy="12.5" r="3.5"></circle></svg>
+          Scatta una foto al piatto
+        </button>
+        <button onClick="{{takePhoto}}" style="all: unset; cursor: pointer; height: 56px; padding: 0 12px; border-radius: 18px; display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="4"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M5 17l4.5-4.5 3 3 2.5-2.5 4 4"></path></svg>
+          Scegli dalla galleria
+        </button>
+        <button onClick="{{nextIllus}}" style="all: unset; cursor: pointer; height: 56px; padding: 0 12px; border-radius: 18px; display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"></path><path d="M8 8c0-2 2-2 2-4M13 8c0-2 2-2 2-4"></path></svg>
+          {{illusLabel}}
+        </button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Ingrediente personalizzato, oppure i valori di un ingrediente: per 100 g, facoltativi -->
+  <sc-if value="{{showCustom}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 430">
+      <button onClick="{{closeCustom}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="dialog" aria-label="{{customTitle}}" style="position: absolute; left: 8px; right: 8px; bottom: 8px; box-sizing: border-box; padding: 22px 16px 16px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 -8px 30px {{c.shadowStrong}}; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-size: 19px; font-weight: 700">{{customTitle}}</div>
+        <sc-if value="{{customIsNew}}" hint-placeholder-val="{{ true }}">
+          <input type="text" value="{{cs.name}}" onChange="{{csName}}" placeholder="Nome dell'ingrediente" aria-label="Nome dell'ingrediente" style="box-sizing: border-box; height: 52px; padding: 0 16px; border: none; outline: none; border-radius: 18px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; font: inherit; font-size: 16px; color: {{c.text}}">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="font-size: 15px; font-weight: 600">Quantità</span>
+            <span style="display: flex; align-items: center; gap: 4px">
+              <button onClick="{{csMinus}}" aria-label="Meno" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: {{c.chip}}; display: flex; align-items: center; justify-content: center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+              </button>
+              <span style="min-width: 70px; text-align: center; font-size: 17px; font-weight: 700">{{cs.qty}}</span>
+              <button onClick="{{csPlus}}" aria-label="Più" style="all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: {{c.chip}}; display: flex; align-items: center; justify-content: center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              </button>
+            </span>
+          </div>
+        </sc-if>
+        <div style="font-size: 13px; color: {{c.muted}}">Valori per 100 g, facoltativi</div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{csVals}}" as="cv" hint-placeholder-count="4">
+            <label style="box-sizing: border-box; height: 64px; padding: 8px 10px; border-radius: 16px; background: {{c.chip}}; box-shadow: inset 0 0 0 1px {{c.chipRing}}; display: flex; flex-direction: column; justify-content: center">
+              <span style="font-size: 12px; color: {{c.muted}}">{{cv.label}}</span>
+              <input type="text" inputmode="decimal" value="{{cv.value}}" onChange="{{cv.onInput}}" placeholder="—" aria-label="{{cv.label}}" style="width: 100%; min-width: 0; border: none; outline: none; background: transparent; padding: 0; font: inherit; font-size: 17px; font-weight: 700; color: {{c.text}}">
+            </label>
+          </sc-for>
+        </div>
+        <button onClick="{{csSave}}" style="all: unset; cursor: pointer; height: 52px; border-radius: 18px; background: {{c.text}}; color: {{c.bg}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; opacity: {{csSaveOp}}; pointer-events: {{csSavePointer}}">{{customSave}}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Conferma dell'eliminazione, solo in modifica -->
+  <sc-if value="{{showAskDel}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 450">
+      <button onClick="{{closeAsk}}" aria-label="Chiudi" style="all: unset; cursor: pointer; position: absolute; inset: 0; background: {{c.scrim}}"></button>
+      <div role="alertdialog" aria-label="Eliminare il pasto?" style="position: absolute; left: 24px; right: 24px; top: 300px; box-sizing: border-box; padding: 26px 20px 20px; border-radius: 32px; background: {{c.sheet}}; box-shadow: 0 20px 50px {{c.shadowStrong}}; display: flex; flex-direction: column; align-items: center; text-align: center">
+        <div style="font-size: 21px; font-weight: 700">Eliminare il pasto?</div>
+        <div style="margin-top: 4px; font-size: 15px; color: {{c.muted}}">{{nameValue}}</div>
+        <div style="margin-top: 22px; align-self: stretch; display: flex; gap: 10px">
+          <button onClick="{{closeAsk}}" style="all: unset; cursor: pointer; flex: 1; height: 52px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px {{c.chipRing}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">No</button>
+          <a href="Main.dc.html" style="flex: 1; height: 52px; border-radius: 18px; background: {{c.danger}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; font-weight: 700">Sì</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Lettura del codice a barre: riconosce il prodotto e lo aggiunge con i suoi valori -->
+  <sc-if value="{{showScan}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 600; background: #0E0E0D; color: #F4F3EF">
+      <button onClick="{{stopScan}}" aria-label="Chiudi la lettura" style="all: unset; cursor: pointer; position: absolute; right: 16px; top: 52px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F3EF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+      <div style="position: absolute; left: 65px; top: 300px; width: 260px; height: 170px; box-sizing: border-box; border-radius: 26px; border: 3px solid {{scanRing}}; overflow: hidden; transition: border-color 240ms">
+        <div style="position: absolute; left: 16px; right: 16px; top: {{scanLine}}px; height: 2px; border-radius: 1px; background: #FF6B5A; box-shadow: 0 0 12px #FF6B5A; opacity: {{scanLineOp}}"></div>
+      </div>
+      <div style="position: absolute; left: 24px; right: 24px; top: 500px; text-align: center">
+        <div style="font-size: 18px; font-weight: 700">{{scanTitle}}</div>
+        <div style="margin-top: 6px; font-size: 15px; color: rgba(244,243,239,.7)">{{scanSub}}</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"scuro":{"editor":"boolean","default":false},"modifica":{"editor":"boolean","default":false},"rivedi":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const mod = props.modifica ?? false;
+    const pasta = this.pronti()[0];
+    this.seq = 1;
+    this.state = {
+      query: '',
+      ingr: mod ? this.fromPronto(pasta) : [],
+      picked: mod ? 0 : -1,
+      nameCustom: mod ? pasta.name : null,
+      illusCustom: mod ? pasta.illus : null,
+      photo: false,
+      tab: 0, wormL: 42, wormW: 16, wormTr: 'none',
+      cx: 0, co: 1, ctr: 'none',
+      valMode: 'meal', mealVals: [null, null, null, null],
+      img: false, custom: null,
+      el: 0, step: 0, scan: null, askDel: false, saved: false
+    };
+    this.timers = [];
+    this.t0 = 0;
+    // L'entrata riparte ogni volta che la pagina torna sullo schermo
+    this.rootRef = (el) => {
+      if (!el || this.io) return;
+      try {
+        this.io = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) this.playIntro();
+        }, { threshold: 0.6 });
+        this.io.observe(el);
+      } catch (e) { this.playIntro(); }
+    };
+  }
+
+  componentDidMount() {
+    try { this.reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { this.reduce = false; }
+    if (this.reduce) { this.setState({ step: 9 }); return; }
+    // Nel canvas l'entrata riparte anche quando la tavola si allarga a tutta finestra, o dal comando «Rivedi l'entrata»
+    this.onResize = () => this.playIntro();
+    window.addEventListener('resize', this.onResize);
+    let last = 0;
+    const tick = (now) => {
+      if (now - last > 33) { last = now; this.setState({ el: now - this.t0 }); }
+      this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentDidUpdate(prev) {
+    if (prev.rivedi !== this.props.rivedi) this.playIntro();
+  }
+  componentWillUnmount() {
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.timers.forEach(clearTimeout);
+    if (this.io) this.io.disconnect();
+    window.removeEventListener('resize', this.onResize);
+  }
+  later(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  playIntro() {
+    if (this.reduce) return;
+    this.timers.forEach(clearTimeout);
+    this.timers = [];
+    this.t0 = performance.now();
+    this.setState({ step: 0, el: 0 });
+    for (let k = 0; k < 4; k++) this.later(1900 + k * 160, () => this.setState({ step: k + 1 }));
+  }
+
+  // Illustrazioni provvisorie: indicano dove stanno, non lo stile finale
+  palettes() {
+    return [
+      { f1: '#E8D3B0', f1d: '#F4E6CC', f2: '#F0B347', f3: '#D63A22', f4: '#3E9A4C', f5: '#FFF1C9' },
+      { f1: '#3F8FC9', f1d: '#8EC3EA', f2: '#D9AE6A', f3: '#E2412B', f4: '#5DB35B', f5: '#F7E4A6' },
+      { f1: '#7A9BC4', f1d: '#B9CDE6', f2: '#EADBC0', f3: '#A2774E', f4: '#F3CF65', f5: '#FFF6E0' },
+      { f1: '#B5532B', f1d: '#DC8A62', f2: '#D99A45', f3: '#7E4A2A', f4: '#F3CF65', f5: '#4E8C42' },
+      { f1: '#5E7D4A', f1d: '#9DBA86', f2: '#E9C28A', f3: '#E9693F', f4: '#6FB54A', f5: '#F7E4A6' },
+      { f1: '#E58E6E', f1d: '#F6C2AC', f2: '#FDF9F2', f3: '#6A2F93', f4: '#D8243F', f5: '#2F49A8' }
+    ];
+  }
+  pronti() {
+    return [
+      { name: 'Pasta al pomodoro', illus: 0, ingr: [['Pasta di semola', 100], ['Passata di pomodoro', 150], ['Olio extravergine', 10], ['Basilico', 2], ['Parmigiano', 15]] },
+      { name: 'Pasta e fagioli', illus: 3, ingr: [['Pasta di semola', 70], ['Fagioli borlotti', 150], ['Passata di pomodoro', 50], ['Olio extravergine', 10]] },
+      { name: 'Insalata greca', illus: 1, ingr: [['Pomodorini', 150], ['Cetrioli', 100], ['Feta', 60], ['Olive nere', 20]] },
+      { name: 'Risotto ai funghi', illus: 2, ingr: [['Riso Carnaroli', 90], ['Funghi champignon', 120], ['Parmigiano', 15], ['Burro', 10]] },
+      { name: 'Pollo e patate', illus: 4, ingr: [['Petto di pollo', 150], ['Patate', 200], ['Rosmarino', 2]] }
+    ];
+  }
+  // Catalogo di esempio: valori per 100 g; per gli ingredienti a pezzi l'app conosce il peso di un pezzo
+  catalog() {
+    return [
+      { name: 'Pasta di semola', q: 100, u: 'g', n: [353, 12, 72, 1.5] }, { name: 'Passata di pomodoro', q: 150, u: 'g', n: [24, 1.3, 4, 0.2] },
+      { name: 'Parmigiano', q: 15, u: 'g', n: [392, 33, 0, 28] }, { name: 'Pane integrale', q: 60, u: 'g', n: [240, 9, 41, 3] },
+      { name: 'Patate', q: 200, u: 'g', n: [77, 2, 17, 0.1] }, { name: 'Pomodorini', q: 150, u: 'g', n: [18, 0.9, 3.5, 0.2] },
+      { name: 'Petto di pollo', q: 150, u: 'g', n: [110, 23, 0, 1.5] }, { name: 'Yogurt greco', q: 170, u: 'g', n: [97, 9, 4, 5] },
+      { name: 'Fagioli borlotti', q: 150, u: 'g', n: [100, 7, 15, 0.5] }, { name: 'Funghi champignon', q: 120, u: 'g', n: [22, 3, 0.5, 0.3] },
+      { name: 'Olio extravergine', q: 10, u: 'g', n: [899, 0, 0, 99.9] }, { name: 'Basilico', q: 2, u: 'g', n: [23, 3, 2.6, 0.6] },
+      { name: 'Riso Carnaroli', q: 90, u: 'g', n: [350, 7, 80, 0.6] }, { name: 'Feta', q: 60, u: 'g', n: [264, 14, 4, 21] },
+      { name: 'Cetrioli', q: 100, u: 'g', n: [15, 0.7, 3.6, 0.1] }, { name: 'Olive nere', q: 20, u: 'g', n: [115, 0.8, 6, 11] },
+      { name: 'Burro', q: 10, u: 'g', n: [717, 0.9, 0.1, 81] }, { name: 'Rosmarino', q: 2, u: 'g', n: [131, 3.3, 21, 5.9] },
+      { name: 'Uova', q: 2, u: 'pezzi', w: 60, n: [143, 12.6, 0.7, 9.5] }, { name: 'Banana', q: 1, u: 'pezzi', w: 120, n: [89, 1.1, 23, 0.3] },
+      { name: 'Mela', q: 1, u: 'pezzi', w: 180, n: [52, 0.3, 14, 0.2] }, { name: 'Pane in cassetta', q: 2, u: 'pezzi', w: 25, n: [265, 8, 49, 3.5] }
+    ];
+  }
+  // Gli ingredienti di un pasto pronto entrano tutti insieme: hanno la stessa data di aggiunta
+  fromPronto(p) {
+    const cat = this.catalog();
+    const at = this.seq++;
+    return p.ingr.map((r) => {
+      const k = cat.find((x) => x.name === r[0]);
+      return { name: r[0], q: r[1], u: 'g', n: k ? k.n : null, at };
+    });
+  }
+
+  // In modifica ogni cambio si salva subito: la scritta «Salvato» lo conferma per un attimo
+  change(patch) {
+    this.setState(patch);
+    if (!(this.props.modifica ?? false)) return;
+    this.setState({ saved: true });
+    clearTimeout(this.savedTimer);
+    this.savedTimer = setTimeout(() => this.setState({ saved: false }), 1600);
+  }
+  // Cambio di sezione: il pallino attivo si allunga fino alla destinazione, poi si ritira lì; il contenuto entra da quel lato
+  goTab(to) {
+    const from = this.state.tab;
+    if (to === from) return;
+    const x = (i) => 50 + i * 100 - 8;
+    const dir = to > from ? 1 : -1;
+    this.setState({
+      tab: to,
+      wormL: Math.min(x(from), x(to)), wormW: Math.abs(x(to) - x(from)) + 16, wormTr: 'left 180ms ease-out, width 180ms ease-out',
+      cx: dir * 44, co: 0, ctr: 'none'
+    });
+    setTimeout(() => this.setState({ wormL: x(to), wormW: 16, wormTr: 'left 240ms cubic-bezier(.2,.9,.25,1), width 240ms cubic-bezier(.2,.9,.25,1)' }), 190);
+    setTimeout(() => this.setState({ cx: 0, co: 1, ctr: 'transform 380ms cubic-bezier(.2,.9,.25,1), opacity 300ms' }), 30);
+  }
+
+  // Lettura simulata: dopo un attimo riconosce un prodotto da supermercato e lo aggiunge
+  startScan() {
+    this.setState({ scan: 'on' });
+    setTimeout(() => this.setState({ scan: 'found' }), 1500);
+    this.scanTimer = setTimeout(() => {
+      const prod = { name: 'Yogurt greco bianco 0%', q: 170, u: 'g', n: [57, 10, 3.6, 0], at: this.seq++ };
+      this.setState({ scan: null });
+      this.change({ ingr: this.state.ingr.concat([prod]), picked: -1 });
+    }, 2500);
+  }
+
+  renderVals() {
+    const dark = this.props.scuro ?? false;
+    const mod = this.props.modifica ?? false;
+    const c = dark ? {
+      bg: '#151515', text: '#EDECE8', muted: '#A6A49E', chip: '#222220', chipRing: '#31302D', dotOff: '#5A5954', ok: '#5FD38D',
+      sheet: '#1E1E1C', shadow: 'rgba(0,0,0,.45)', shadowStrong: 'rgba(0,0,0,.6)', danger: '#E5675A', scrim: 'rgba(0,0,0,.55)', photoRing: '#2B2A28',
+      trayIn: '#33322F', trayOut: '#232220', trayRing: 'rgba(255,255,255,.06)', trayDeep: 'rgba(0,0,0,.35)',
+      plateIn: '#45433F', plateOut: '#302F2C', plateShadow: 'rgba(0,0,0,.45)', plateDeep: 'rgba(0,0,0,.3)', plateLine: 'rgba(255,255,255,.06)', floorShadow: 'rgba(0,0,0,.6)',
+      groundDot: 'rgba(237,236,232,.16)'
+    } : {
+      bg: '#FCFCFB', text: '#151515', muted: '#5E5C57', chip: '#F3F1EC', chipRing: '#E6E2DA', dotOff: '#BDB8AE', ok: '#1F8A57',
+      sheet: '#FFFFFF', shadow: 'rgba(21,21,21,.08)', shadowStrong: 'rgba(21,21,21,.16)', danger: '#C8382A', scrim: 'rgba(21,21,21,.32)', photoRing: '#FFFFFF',
+      trayIn: '#ECECEA', trayOut: '#D6D6D3', trayRing: 'rgba(21,21,21,.05)', trayDeep: 'rgba(21,21,21,.06)',
+      plateIn: '#FFFFFF', plateOut: '#ECE6DC', plateShadow: 'rgba(60,40,20,.18)', plateDeep: 'rgba(60,40,20,.08)', plateLine: 'rgba(60,40,20,.07)', floorShadow: 'rgba(21,21,21,.22)',
+      groundDot: 'rgba(21,21,21,.13)'
+    };
+
+    const st = this.state;
+    const pronti = this.pronti();
+    const cat = this.catalog();
+    const ingr = st.ingr;
+    const q = st.query.trim().toLowerCase();
+    const has = (n) => ingr.some((x) => x.name.toLowerCase() === n.toLowerCase());
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+    // Camera: lontana e dall'alto, con il piatto in basso nell'inquadratura; si avvicina scendendo e girando verso destra.
+    // Durante l'entrata il piatto è fermo sul tavolo: si muove tutta la scena. Poi la camera si ferma e gira solo il piatto
+    const p = this.reduce ? 1 : clamp01(st.el / 2000);
+    const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    const tilt = 62 * e;
+    const cam = {
+      y: 170 * (1 - e), dist: 0.55 + 0.45 * e, tilt,
+      orbit: -55 * (1 - e),
+      spin: this.reduce ? 0 : Math.max(0, st.el - 2000) / 1000 * 9
+    };
+    const food = ingr.length > 0 || st.photo ? 1 : 0;
+    const topVis = 1 - clamp01((tilt - 18) / 24);
+    const sec = (k) => (st.step > k ? { o: 1, x: 0 } : { o: 0, x: 32 });
+
+    // Nome proposto: quello del pasto pronto, oppure dai primi due ingredienti
+    let proposed = '';
+    if (st.picked >= 0) proposed = pronti[st.picked].name;
+    else if (ingr.length === 1) proposed = ingr[0].name;
+    else if (ingr.length > 1) proposed = ingr[0].name + ' e ' + ingr[1].name.toLowerCase();
+    const nameValue = st.nameCustom !== null ? st.nameCustom : proposed;
+    let nameHint = 'Il nome lo propone l’app dagli ingredienti';
+    if (mod) nameHint = 'Tocca il nome per cambiarlo';
+    else if (st.nameCustom !== null) nameHint = 'Scritto da te';
+    else if (proposed !== '') nameHint = 'Proposto dall’app: toccalo per cambiarlo';
+
+    let illus = 1;
+    if (st.illusCustom !== null) illus = st.illusCustom;
+    else if (st.picked >= 0) illus = pronti[st.picked].illus;
+
+    const weight = (x) => {
+      if (x.u === 'g') return x.q;
+      const known = cat.find((k) => k.name === x.name && k.w);
+      return x.q * (known ? known.w : 100);
+    };
+    const qtyText = (x) => (x.u === 'g' ? x.q + ' g' : x.q + (x.q === 1 ? ' pezzo' : ' pezzi'));
+    const fmt = (v) => (v < 10 ? v.toFixed(1).replace('.', ',') : String(Math.round(v)));
+    const kcalOf = (x) => (x.n ? Math.round(x.n[0] * weight(x) / 100) : 0);
+    const tot = ingr.reduce((s, x) => s + weight(x), 0);
+
+    const prontiRes = q === '' ? [] : pronti
+      .map((pr, i) => ({ ...pr, i }))
+      .filter((pr) => pr.name.toLowerCase().indexOf(q) >= 0)
+      .slice(0, 2)
+      .map((pr) => ({
+        name: pr.name,
+        sub: pr.ingr.length + ' ingredienti · ' + this.fromPronto(pr).reduce((s, x) => s + kcalOf(x), 0) + ' kcal',
+        pick: () => this.change({ ingr: this.fromPronto(pr), picked: pr.i, query: '', nameCustom: mod ? st.nameCustom : null, illusCustom: null })
+      }));
+    const ingrRes = q === '' ? [] : cat
+      .filter((k) => k.name.toLowerCase().indexOf(q) >= 0 && !has(k.name))
+      .slice(0, 3)
+      .map((k) => ({
+        name: k.name,
+        sub: qtyText(k) + ' · ' + kcalOf(k) + ' kcal',
+        pick: () => this.change({ ingr: ingr.concat([{ name: k.name, q: k.q, u: k.u, n: k.n, at: this.seq++ }]), picked: -1, query: '' })
+      }));
+
+    // Mosaico: ordine di aggiunta, poi alfabetico a parità di data
+    const order = ingr.map((x, i) => ({ x, i })).sort((a, b) => (a.x.at - b.x.at) || a.x.name.localeCompare(b.x.name, 'it'));
+    const mosaic = order.map(({ x, i }) => ({
+      name: x.name,
+      qty: qtyText(x),
+      remove: () => this.change({ ingr: ingr.filter((_, j) => j !== i), picked: -1 })
+    }));
+    const setAt = (i, fn) => this.change({ ingr: ingr.map((x, j) => (j === i ? fn(x) : x)) });
+    const rows = order.map(({ x, i }) => ({
+      name: x.name,
+      qty: qtyText(x),
+      unit: x.u === 'g' ? 'g' : 'pz',
+      minus: () => setAt(i, (y) => ({ ...y, q: Math.max(y.u === 'g' ? 5 : 1, y.q - (y.u === 'g' ? 10 : 1)) })),
+      plus: () => setAt(i, (y) => ({ ...y, q: y.q + (y.u === 'g' ? 10 : 1) })),
+      toggleUnit: () => setAt(i, (y) => (y.u === 'g' ? { ...y, u: 'pezzi', q: 1 } : { ...y, u: 'g', q: weight(y) }))
+    }));
+
+    // Valori del pasto intero: calcolati dagli ingredienti, ma si possono scrivere a mano
+    const sums = [0, 0, 0, 0];
+    ingr.forEach((x) => { if (x.n) for (let k = 0; k < 4; k++) sums[k] += x.n[k] * weight(x) / 100; });
+    const labels4 = ['Calorie', 'Proteine', 'Carboidrati', 'Grassi'];
+    const units4 = ['kcal', 'g', 'g', 'g'];
+    const nutri = labels4.map((label, k) => {
+      const own = st.mealVals[k];
+      const calc = ingr.length ? (k === 0 ? String(Math.round(sums[0])) : fmt(sums[k])) : '';
+      return {
+        label, unit: units4[k],
+        value: own !== null ? own : calc,
+        onInput: (ev) => { const mv = st.mealVals.slice(); mv[k] = ev.target.value; this.change({ mealVals: mv }); }
+      };
+    });
+    const anyOwn = st.mealVals.some((v) => v !== null);
+    const ingrVals = order.map(({ x, i }) => ({
+      name: x.name, qty: qtyText(x),
+      line: x.n ? kcalOf(x) + ' kcal · P ' + fmt(x.n[1] * weight(x) / 100) + ' g · C ' + fmt(x.n[2] * weight(x) / 100) + ' g · G ' + fmt(x.n[3] * weight(x) / 100) + ' g' : 'Senza valori',
+      btn: x.n ? 'Modifica' : 'Aggiungi',
+      aria: (x.n ? 'Modifica i valori di ' : 'Aggiungi i valori di ') + x.name,
+      edit: () => this.setState({ custom: { mode: 'vals', idx: i, name: x.name, q: x.q, u: x.u, vals: x.n ? x.n.map((v) => String(v).replace('.', ',')) : ['', '', '', ''] } })
+    }));
+    const vmOn = { bg: c.text, fg: c.bg, pressed: 'true' };
+    const vmOff = { bg: 'transparent', fg: c.text, pressed: 'false' };
+
+    // Pannello dell'ingrediente personalizzato o dei valori di un ingrediente
+    const cs = st.custom;
+    const toNum = (s) => { const v = parseFloat(String(s).replace(',', '.')); return isNaN(v) ? null : v; };
+    const csVals = labels4.map((label, k) => ({
+      label: k === 0 ? 'kcal' : label,
+      value: cs ? cs.vals[k] : '',
+      onInput: (ev) => { const vals = cs.vals.slice(); vals[k] = ev.target.value; this.setState({ custom: { ...cs, vals } }); }
+    }));
+    const csReady = !!cs && (cs.mode === 'vals' || cs.name.trim() !== '');
+
+    const labels = ['Ingredienti', 'Quantità', 'Valori'];
+    const tabs = labels.map((label, i) => ({
+      label,
+      sel: st.tab === i ? 'true' : 'false',
+      weight: st.tab === i ? 700 : 500,
+      color: st.tab === i ? c.text : c.muted,
+      pick: () => this.goTab(i)
+    }));
+
+    const scan = st.scan;
+    return {
+      c, cam, rootRef: this.rootRef,
+      topFoodOp: food * topVis * (st.photo ? 0 : 1),
+      topPhotoOp: topVis * (st.photo ? 1 : 0),
+      sideOp: food * clamp01((tilt - 30) / 24),
+      noPhoto: !st.photo, hasPhoto: st.photo,
+      // Foto di esempio: un piatto visto dall'alto, ritagliato in un cerchio
+      photoBg: 'radial-gradient(circle at 38% 36%, #F6E2B3 0 14%, rgba(0,0,0,0) 15%), radial-gradient(circle at 60% 56%, #C64A2E 0 20%, rgba(0,0,0,0) 21%), radial-gradient(circle at 42% 66%, #5E8F3E 0 9%, rgba(0,0,0,0) 10%), radial-gradient(circle at 66% 34%, #E9B44C 0 8%, rgba(0,0,0,0) 9%), radial-gradient(circle, #E7C98F 0 46%, #F7F2EA 47% 68%, #DCD2C2 69% 100%)',
+      s0: sec(0), s1: sec(1), s2: sec(2), s3: sec(3),
+      title: mod ? 'Modifica pasto' : 'Nuovo pasto',
+      modifica: mod, isNew: !mod,
+      savedOp: st.saved ? 1 : 0,
+      il: this.palettes()[illus],
+      openImg: () => this.setState({ img: true }),
+      closeImg: () => this.setState({ img: false }),
+      showImg: st.img,
+      takePhoto: () => this.change({ photo: true, img: false }),
+      illusLabel: st.photo ? 'Usa l’illustrazione' : 'Cambia illustrazione',
+      nextIllus: () => this.change(st.photo ? { photo: false, img: false } : { illusCustom: (illus + 1) % this.palettes().length, img: false }),
+      nameValue, nameHint,
+      onName: (ev) => this.change({ nameCustom: ev.target.value }),
+      tabs,
+      worm: { l: st.wormL, w: st.wormW, tr: st.wormTr },
+      cnt: { x: st.cx, o: st.co, tr: st.ctr },
+      tabIngr: st.tab === 0, tabQty: st.tab === 1, tabVal: st.tab === 2,
+      query: st.query,
+      onQuery: (ev) => this.setState({ query: ev.target.value }),
+      showRes: q !== '',
+      hasPronti: prontiRes.length > 0,
+      prontiRes, ingrRes, mosaic, rows,
+      noIngr: ingr.length === 0,
+      total: ingr.length ? 'Totale ' + tot + ' g' : '',
+      openCustom: () => this.setState({ custom: { mode: 'new', name: st.query.trim(), q: 100, u: 'g', vals: ['', '', '', ''] }, query: '' }),
+      closeCustom: () => this.setState({ custom: null }),
+      showCustom: !!cs,
+      customIsNew: !!cs && cs.mode === 'new',
+      customTitle: cs && cs.mode === 'vals' ? 'Valori di ' + cs.name : 'Ingrediente personalizzato',
+      customSave: cs && cs.mode === 'vals' ? 'Salva i valori' : 'Aggiungi',
+      cs: cs ? { name: cs.name, qty: cs.q + ' g' } : { name: '', qty: '' },
+      csName: (ev) => this.setState({ custom: { ...cs, name: ev.target.value } }),
+      csMinus: () => this.setState({ custom: { ...cs, q: Math.max(5, cs.q - 10) } }),
+      csPlus: () => this.setState({ custom: { ...cs, q: cs.q + 10 } }),
+      csVals,
+      csSaveOp: csReady ? 1 : 0.35, csSavePointer: csReady ? 'auto' : 'none',
+      csSave: () => {
+        const nums = cs.vals.map(toNum);
+        const n = nums.every((v) => v === null) ? null : nums.map((v) => (v === null ? 0 : v));
+        if (cs.mode === 'new') {
+          const nm = cs.name.trim();
+          this.change({ ingr: ingr.concat([{ name: nm.charAt(0).toUpperCase() + nm.slice(1), q: cs.q, u: 'g', n, at: this.seq++ }]), picked: -1, custom: null });
+        } else {
+          this.change({ ingr: ingr.map((x, j) => (j === cs.idx ? { ...x, n } : x)), custom: null });
+        }
+      },
+      valMeal: st.valMode === 'meal', valIngr: st.valMode === 'ingr',
+      vmMeal: st.valMode === 'meal' ? vmOn : vmOff,
+      vmIngr: st.valMode === 'ingr' ? vmOn : vmOff,
+      modeMeal: () => this.setState({ valMode: 'meal' }),
+      modeIngr: () => this.setState({ valMode: 'ingr' }),
+      nutri, ingrVals,
+      perWeight: ingr.length ? 'Per il pasto intero, ' + tot + ' g' : 'Per il pasto intero',
+      mealValHint: anyOwn ? 'Valori scritti da te per il pasto intero: hanno la precedenza su quelli degli ingredienti.' : 'Calcolati dagli ingredienti. Puoi scriverli tu, se li hai pesati per il pasto intero.',
+      askDelete: () => this.setState({ askDel: true }),
+      closeAsk: () => this.setState({ askDel: false }),
+      showAskDel: st.askDel,
+      startScan: () => this.startScan(),
+      stopScan: () => { clearTimeout(this.scanTimer); this.setState({ scan: null }); },
+      showScan: !!scan,
+      scanRing: scan === 'found' ? '#5FD38D' : 'rgba(255,255,255,.9)',
+      scanLine: 84 + 66 * Math.sin(st.el / 260),
+      scanLineOp: scan === 'found' ? 0 : 1,
+      scanTitle: scan === 'found' ? 'Yogurt greco bianco 0%' : 'Inquadra il codice a barre',
+      scanSub: scan === 'found' ? '170 g · 97 kcal: lo aggiungo agli ingredienti' : 'Il prodotto si riconosce da solo',
+      saveDisabled: ingr.length === 0 ? 'true' : 'false',
+      saveOp: ingr.length === 0 ? 0.35 : 1,
+      savePointer: ingr.length === 0 ? 'none' : 'auto'
+    };
+  }
+}
+</script>
+</body>
+</html>

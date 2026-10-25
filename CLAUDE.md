@@ -23,6 +23,7 @@ DietNGo registra i pasti abituali nel modo più rapido possibile: con un tocco, 
 - I nomi di classi, metodi, variabili, pacchetti, tabelle e colonne si scrivono in inglese.
 - Le librerie si usano nella versione stabile più recente, verificata online e non a memoria.
 - Prima di una decisione di architettura grossa o di una dipendenza pesante si chiede all'utente.
+- Le decisioni, le descrizioni e i design delle pagine diverse dalla home, e la preview eseguibile dell'app con i dati di esempio, si scrivono nel branch git `uiTest`: prima di scriverli si passa a quel branch.
 - I warning si risolvono, non si ignorano e non si nascondono: quelli del compilatore, di Gradle, di Android Studio e quelli di obsolescenza. L'app deve restare pulita per durare nel tempo. Un warning che non si riesce a risolvere si riporta all'utente con il motivo: lasciarlo o sopprimerlo lo decide lui.
 - Le informazioni verificate online che possono riservire si scrivono nella cartella `Docs/Info`, in una sottocartella per argomento, con la data della verifica e le pagine lette. Prima di cercare online si guarda lì.
 
