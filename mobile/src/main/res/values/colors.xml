@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Stessi colori di BackgroundLight e BackgroundDark in ui/theme/Color.kt: si cambiano insieme -->
+    <color name="background_light">#FFFCFCFB</color>
+    <color name="background_dark">#FF151515</color>
 </resources>

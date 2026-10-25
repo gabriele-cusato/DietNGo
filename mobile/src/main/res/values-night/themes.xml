@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <!-- Tema mostrato all'avvio quando il telefono è in tema scuro: senza, si vedrebbe un lampo bianco prima della home -->
+    <style name="Theme.DietNGo" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/background_dark</item>
+    </style>
+</resources>
