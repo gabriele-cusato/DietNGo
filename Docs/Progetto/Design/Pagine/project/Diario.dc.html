@@ -27,18 +27,13 @@ body{margin:0}
         </svg>
         <sc-for list="{{months}}" as="m" hint-placeholder-count="4">
           <div style="opacity: {{m.o}}; transform: translateY({{m.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
-            <!-- Dentro, le quattro settimane più recenti a S al centro; sotto, se ce ne sono altre, l'inizio di una nuova S a pallini piccoli -->
-            <button onClick="{{m.open}}" aria-label="{{m.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{m.l}}px; top: {{m.t}}px; width: 116px; height: 116px; border-radius: 50%; background: {{m.bg}}; box-shadow: 0 12px 26px {{c.sphereShadow}}">
+            <!-- La sfera è un contenitore: il liquido sale con i giorni registrati del mese e ha il colore della sua valutazione -->
+            <button onClick="{{m.open}}" aria-label="{{m.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{m.l}}px; top: {{m.t}}px; width: 116px; height: 116px; border-radius: 50%; overflow: hidden; background: {{c.glass}}; box-shadow: 0 12px 26px {{c.sphereShadow}}">
               <svg width="116" height="116" viewBox="0 0 116 116" aria-hidden="true" style="position: absolute; left: 0; top: 0">
-                <path d="{{m.mini}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.8" stroke-linecap="round"></path>
-                <path d="{{m.tail}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.2" stroke-linecap="round" opacity=".55"></path>
+                <path d="{{m.waveBack}}" fill="{{m.liqBack}}"></path>
+                <path d="{{m.waveFront}}" fill="{{m.liqFront}}"></path>
               </svg>
-              <sc-for list="{{m.dots}}" as="d" hint-placeholder-count="4">
-                <span style="box-sizing: border-box; position: absolute; left: {{d.l}}px; top: {{d.t}}px; width: 14px; height: 14px; border-radius: 50%; background: {{d.bg}}; box-shadow: 0 0 0 1.5px {{c.dotRing}}"></span>
-              </sc-for>
-              <sc-for list="{{m.more}}" as="mo" hint-placeholder-count="3">
-                <span style="position: absolute; left: {{mo.l}}px; top: {{mo.t}}px; width: 5px; height: 5px; border-radius: 50%; background: {{c.innerThread}}"></span>
-              </sc-for>
+              <span style="position: absolute; inset: 0; border-radius: 50%; background: {{c.shine}}; box-shadow: inset 0 0 0 1px {{c.glassRing}}; pointer-events: none"></span>
             </button>
             <div style="position: absolute; left: {{m.lx}}px; top: {{m.ly}}px; width: 130px; display: flex; flex-direction: column; align-items: {{m.align}}; gap: 4px; pointer-events: none">
               <span style="font-size: 16px; font-weight: 700">{{m.label}}</span>
@@ -58,18 +53,13 @@ body{margin:0}
         </svg>
         <sc-for list="{{weeks}}" as="w" hint-placeholder-count="4">
           <div style="opacity: {{w.o}}; transform: translateY({{w.dy}}px); transition: opacity 420ms, transform 520ms cubic-bezier(.2,.9,.25,1)">
-            <!-- Dentro, i quattro giorni più recenti a S al centro; sotto, l'inizio di una nuova S a pallini piccoli: c'è dell'altro -->
-            <button onClick="{{w.open}}" aria-label="{{w.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{w.l}}px; top: {{w.t}}px; width: 104px; height: 104px; border-radius: 50%; background: {{w.bg}}; box-shadow: 0 10px 24px {{c.sphereShadow}}">
+            <!-- La sfera è un contenitore: il liquido sale con i giorni registrati della settimana e ha il colore della sua valutazione -->
+            <button onClick="{{w.open}}" aria-label="{{w.aria}}" style="all: unset; cursor: pointer; box-sizing: border-box; position: absolute; left: {{w.l}}px; top: {{w.t}}px; width: 104px; height: 104px; border-radius: 50%; overflow: hidden; background: {{c.glass}}; box-shadow: 0 10px 24px {{c.sphereShadow}}">
               <svg width="104" height="104" viewBox="0 0 104 104" aria-hidden="true" style="position: absolute; left: 0; top: 0">
-                <path d="{{w.mini}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.8" stroke-linecap="round"></path>
-                <path d="{{w.tail}}" fill="none" stroke="{{c.innerThread}}" stroke-width="1.2" stroke-linecap="round" opacity=".55"></path>
+                <path d="{{w.waveBack}}" fill="{{w.liqBack}}"></path>
+                <path d="{{w.waveFront}}" fill="{{w.liqFront}}"></path>
               </svg>
-              <sc-for list="{{w.dots}}" as="d" hint-placeholder-count="4">
-                <span style="box-sizing: border-box; position: absolute; left: {{d.l}}px; top: {{d.t}}px; width: 12px; height: 12px; border-radius: 50%; background: {{d.bg}}; box-shadow: {{d.ring}}"></span>
-              </sc-for>
-              <sc-for list="{{w.more}}" as="mo" hint-placeholder-count="3">
-                <span style="position: absolute; left: {{mo.l}}px; top: {{mo.t}}px; width: 5px; height: 5px; border-radius: 50%; background: {{c.innerThread}}"></span>
-              </sc-for>
+              <span style="position: absolute; inset: 0; border-radius: 50%; background: {{c.shine}}; box-shadow: inset 0 0 0 1px {{c.glassRing}}; pointer-events: none"></span>
             </button>
             <div style="position: absolute; left: {{w.lx}}px; top: {{w.ly}}px; width: 140px; display: flex; flex-direction: column; align-items: {{w.align}}; gap: 2px; pointer-events: none">
               <span style="font-size: 16px; font-weight: 700">{{w.ord}}<sup style="font-size: .62em">a</sup> settimana</span>
@@ -101,7 +91,13 @@ body{margin:0}
                 <sc-if value="{{d.mkTwig}}" hint-placeholder-val="{{ true }}">
                   <span style="flex: none; width: 18px; height: 2px; border-radius: 1px; background: {{c.twig}}"></span>
                 </sc-if>
-                <svg width="18" height="22" viewBox="0 0 74 92" aria-hidden="true" style="flex: none"><path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="#F2845F"></path><path d="M37 40c4 8 14 14 14 26a14 14 0 0 1-28 0c0-8 6-14 8-18 0 6 2 8 4 8-1-8 0-12 2-16z" fill="#FFC97A"></path></svg>
+                <!-- Serie in corso: il fuoco animato delle emoji di Google, che brucia sempre; altrimenti la fiammella disegnata, ferma -->
+                <sc-if value="{{d.mkLive}}" hint-placeholder-val="{{ false }}">
+                  <img src="/_blob/c9f4c04247d609fb7625487c5f55401e" alt="" width="26" height="26" style="flex: none; width: 26px; height: 26px; margin-top: -4px">
+                </sc-if>
+                <sc-if value="{{d.mkStill}}" hint-placeholder-val="{{ true }}">
+                  <svg width="18" height="22" viewBox="0 0 74 92" aria-hidden="true" style="flex: none; filter: {{d.mkFilter}}"><path d="M37 2c6 14 26 26 26 50a26 26 0 0 1-52 0c0-12 6-20 12-26 0 8 4 13 8 14-2-16 0-28 6-38z" fill="#F2845F"></path><path d="M37 40c4 8 14 14 14 26a14 14 0 0 1-28 0c0-8 6-14 8-18 0 6 2 8 4 8-1-8 0-12 2-16z" fill="#FFC97A"></path></svg>
+                </sc-if>
                 <span style="font-size: 13px; font-weight: 700; color: {{c.flameText}}; white-space: nowrap">{{d.mkText}}</span>
               </div>
             </sc-if>
@@ -181,11 +177,11 @@ body{margin:0}
   <!-- Bollino della pillola: di base a destra, nelle impostazioni anche a sinistra o al centro; toccato, cade nella pillola come una goccia che entra nel suo liquido -->
   <button onClick="{{openPill}}" aria-label="Mostra la navigazione" style="all: unset; cursor: pointer; position: absolute; left: {{bub.left}}px; bottom: 30px; z-index: 310; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transform: translateY({{bub.y}}px) scale({{bub.s}}); opacity: {{bub.o}}; pointer-events: {{bub.pe}}; transition: transform 300ms cubic-bezier(.5,0,.75,0) {{bub.delay}}, opacity 260ms {{bub.delay}}">
     <span style="width: 32px; height: 32px; border-radius: 50%; background: {{c.card}}; box-shadow: inset 0 0 0 1px {{c.cardRing}}, 0 6px 16px {{c.shadow}}; display: flex; align-items: center; justify-content: center">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{bub.arrow}}"></path></svg>
     </span>
   </button>
 
-  <!-- Pillola di navigazione: nascosta all'entrata; si apre dal bollino come un liquido che si allarga, resta circa 10 secondi o finché si tocca la mappa -->
+  <!-- Pillola di navigazione: nascosta all'entrata; si apre dal bollino verso la direzione della freccia, resta circa 10 secondi o finché si tocca la mappa -->
   <nav aria-label="Navigazione" aria-hidden="{{pillHidden}}" style="position: absolute; left: 50%; bottom: 24px; z-index: 300; height: 64px; box-sizing: border-box; padding: 6px 8px; border-radius: 32px; background: {{c.pill}}; box-shadow: inset 0 0 0 1px {{c.pillRing}}, 0 8px 28px {{c.shadow}}; display: flex; align-items: center; gap: 2px; transform-origin: {{pillOrigin}}; transform: translateX(-50%) translateY({{pillY}}px) scale({{pillSX}}, {{pillSY}}); opacity: {{pillOp}}; pointer-events: {{pillPointer}}; transition: transform 560ms cubic-bezier(.3,1.5,.5,1) {{pillDelay}}, opacity 240ms {{pillDelay}}">
     <a href="#" style="width: 66px; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; color: {{c.text}}; font-size: 12px; font-weight: 600">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{c.text}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5"></path><path d="M6 9.5V19a1 1 0 0 0 1 1h3.5v-5h3v5H17a1 1 0 0 0 1-1V9.5"></path></svg>
@@ -294,6 +290,7 @@ class Component extends DCLogic {
     this.timers = [];
     this.ptrs = {};
     this.frozen = false;
+    try { this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { this.reduceMotion = false; }
     this._days = this.buildDays();
     this._runs = this.buildRuns();
     // L'entrata riparte ogni volta che la pagina torna sullo schermo
@@ -461,17 +458,17 @@ class Component extends DCLogic {
     else if (liv === 'mese') this.goTo('anno', { px: 0, py: 0 }, -1);
   }
 
-  // Il filo in miniatura dentro una sfera da 104 punti, ingrandita di k: la stessa onda della pagina dei giorni,
-  // rimpicciolita; quattro pallini e sotto i primi tre, più piccoli, di quelli che seguono
-  miniS(k) {
-    const at = (i, y) => ({ x: (52 + 20 * Math.sin(i * 0.85 + 0.6)) * k, y: y * k });
-    const dots = [0, 1, 2, 3].map((i) => at(i, 18 + i * 18));
-    const more = [4, 5, 6].map((i) => at(i, 84 + (i - 4) * 6));
-    return {
-      path: this.pieces(dots).join(' '),
-      tail: this.pieces([dots[3]].concat(more)).join(' '),
-      dots, more
-    };
+  // Il liquido dentro una sfera di lato size, pieno per la frazione f, con la superficie che ondeggia secondo phase.
+  // Anche a sfera piena resta un po' di vuoto in cima: senza, non si vedrebbe che è un liquido
+  liquid(size, f, phase) {
+    const level = size - (size * 0.08 + f * size * 0.8);
+    const amp = size * 0.03;
+    let d = 'M0 ' + size;
+    for (let x = 0; x <= size; x += 4) {
+      const y = level + amp * Math.sin((x / size) * Math.PI * 2 + phase);
+      d += ' L' + x + ' ' + y.toFixed(1);
+    }
+    return d + ' L' + size + ' ' + size + ' Z';
   }
 
   // Curva morbida che passa per tutti i punti (Catmull-Rom convertita in Bézier), un tratto per coppia di punti
@@ -493,7 +490,9 @@ class Component extends DCLogic {
       pill: '#222220', pillRing: '#32312E', pillActive: '#33322F', avatar: '#E9C9A8', avatarText: '#3A2614',
       shadow: 'rgba(0,0,0,.45)', sphereShadow: 'rgba(0,0,0,.4)', thread: 'rgba(237,236,232,.30)', dash: '#5A5954',
       ringToday: '#EDECE8', sheet: '#1E1E1C', scrim: 'rgba(0,0,0,.5)', danger: '#FF9C8C', dangerBg: '#3A1D1A', ink: '#151515',
-      twig: '#FF9A5A', flameText: '#FFB27A', greyNum: '#2A2927', innerThread: 'rgba(21,21,21,.45)', dotRing: 'rgba(21,21,21,.4)',
+      twig: '#FF9A5A', flameText: '#FFB27A', greyNum: '#2A2927',
+      glass: 'radial-gradient(circle at 34% 28%, #343331, #232220 78%)', glassRing: 'rgba(255,255,255,.10)',
+      shine: 'radial-gradient(circle at 32% 24%, rgba(255,255,255,.22), rgba(255,255,255,0) 42%)',
       base: [237, 236, 232, 0.28], flame: [255, 138, 64, 1],
       v: { buono: ['#9DF2BC', '#22A653'], medio: ['#FFE88A', '#E5A800'], basso: ['#FFB4A8', '#E2453A'], none: ['#9A9893', '#5E5C58'] }
     } : {
@@ -501,7 +500,9 @@ class Component extends DCLogic {
       pill: '#FFFFFF', pillRing: '#E7E4DE', pillActive: '#EFECE6', avatar: '#3A2614', avatarText: '#F6E7D6',
       shadow: 'rgba(21,21,21,.08)', sphereShadow: 'rgba(21,21,21,.14)', thread: 'rgba(21,21,21,.24)', dash: '#C9C4BA',
       ringToday: '#151515', sheet: '#FFFFFF', scrim: 'rgba(21,21,21,.28)', danger: '#B3402F', dangerBg: '#FBEAE6', ink: '#1E1D1B',
-      twig: '#F07A3A', flameText: '#C2531B', greyNum: '#3A3936', innerThread: 'rgba(255,255,255,.85)', dotRing: 'rgba(255,255,255,.9)',
+      twig: '#F07A3A', flameText: '#C2531B', greyNum: '#3A3936',
+      glass: 'radial-gradient(circle at 34% 28%, #FFFFFF, #ECEAE5 78%)', glassRing: 'rgba(21,21,21,.08)',
+      shine: 'radial-gradient(circle at 32% 24%, rgba(255,255,255,.75), rgba(255,255,255,0) 42%)',
       base: [21, 21, 21, 0.22], flame: [244, 108, 38, 1],
       v: { buono: ['#B6F5C9', '#2DBE60'], medio: ['#FFF0A6', '#F7B500'], basso: ['#FFC2B8', '#F0473A'], none: ['#F1EFEB', '#C3BFB7'] }
     };
@@ -538,6 +539,14 @@ class Component extends DCLogic {
       if (run && run.len >= 3 && d.i === run.start) { mkText = 'Inizio serie'; mkTwig = true; }
       if (run && run.len >= 3 && d.i === run.end) { mkText = run.len + ' giorni'; mkTwig = false; }
       const hasMark = mkText !== '';
+      // La fiammella in fondo alla serie: un fuoco che brucia finché la serie è in corso, ferma e grigia se si è spezzata.
+      // Con «riduci animazioni» la serie in corso ha la fiammella disegnata, ferma ma colorata
+      const runEnd = run && d.i === run.end && !mkTwig;
+      const mkLive = !!(runEnd && run.active && !this.reduceMotion);
+      let mkFilter = 'none';
+      if (runEnd && !run.active) {
+        mkFilter = 'grayscale(1)';
+      }
       return {
         ...ap(visRank(d.i)),
         l: p.x - r, t: p.y - r, size: 2 * r,
@@ -547,7 +556,7 @@ class Component extends DCLogic {
         lx: right ? p.x + r + 12 : p.x - r - 132, ly: hasMark ? p.y - 26 : p.y - 10, align: right ? 'left' : 'right',
         label: d.i === 0 ? 'Oggi' : d.wd + ' ' + d.n,
         labelColor: d.missing ? c.muted : c.text,
-        hasMark, mkText, mkTwig,
+        hasMark, mkText, mkTwig, mkLive, mkStill: !mkLive, mkFilter,
         mkL: right ? p.x + r + 6 : p.x - r - 156, mkT: p.y - 4, mkDir: right ? 'row' : 'row-reverse',
         aria: (d.i === 0 ? 'Oggi, ' : '') + d.wdFull + ' ' + d.n + ' ' + d.mese + (d.missing ? ', nessun pasto' : ''),
         open: () => { if (!ignore()) this.openDay(d.i); }
@@ -566,7 +575,7 @@ class Component extends DCLogic {
         segs.push({ d, color: mix(k14), width: (1.6 + 1.8 * k14).toFixed(2), o: shown ? 1 : 0 });
       });
     });
-    // Serie in corso: per ora nessun segno su oggi; il modo di mostrarla è da trovare
+    // Serie in corso: la mostra la fiammella che guizza accanto a oggi
     const active = this._runs.find((r) => r.active && r.len >= 2);
 
     // Livello delle settimane: fiammella colorata se la serie copre la settimana o è in corso, in bianco e nero se si è spezzata
@@ -587,39 +596,33 @@ class Component extends DCLogic {
       const whole = best === 7;
       const lit = whole || (w === 0 && !!active);
       const right = bx < 195;
-      // Filo in miniatura: i quattro giorni più recenti su una S morbida; sotto, una nuova S appena iniziata
-      const sw = this.miniS(1);
-      const inner = ds.slice(0, 4).map((d, k) => ({ ...sw.dots[k], missing: d.missing, v: d.v }));
-      const moreW = ds.length > 4 ? sw.more : [];
+      // Liquido: sale con i giorni registrati della settimana, due onde sfasate per dare profondità
+      const filled = ds.filter((d) => !d.missing).length;
       return {
         ...ap(3 - w),
         l: x - 52, t: y - 52, mode,
-        mini: sw.path,
-        tail: moreW.length ? sw.tail : '',
-        more: moreW.map((pt) => ({ l: pt.x - 2.5, t: pt.y - 2.5 })),
-        dots: inner.map((pt) => ({
-          l: pt.x - 6, t: pt.y - 6,
-          bg: pt.missing ? 'transparent' : c.v[pt.v][1],
-          ring: pt.missing ? 'inset 0 0 0 1.5px ' + c.dash : '0 0 0 1.5px ' + c.dotRing
-        })),
-        bg: sphereBg(mode),
+        waveBack: this.liquid(104, filled / 7, -t * 1.3 + w + 2),
+        waveFront: this.liquid(104, filled / 7, t * 1.6 + w),
+        liqBack: c.v[mode][0], liqFront: c.v[mode][1],
         lx: right ? x + 64 : x - 204, ly: y - 26, align: right ? 'flex-start' : 'flex-end',
         ord: ords[w], range: ranges[w],
         count: whole ? 7 : best,
         flameFilter: lit ? 'none' : 'grayscale(1)',
         numColor: lit ? c.flameText : c.greyNum,
-        aria: ords[w] + 'a settimana, ' + ranges[w],
+        aria: ords[w] + 'a settimana, ' + ranges[w] + ', ' + filled + ' giorni su 7',
         open: () => { if (!ignore()) this.goTo('settimana', { px: 0, py: this.focusDay(w * 7 + 3) }, 1); }
       };
     });
     const mesePath = this.pieces(mPts).join(' ');
 
-    // Livello dei mesi: ottobre viene dai dati dell'esempio, gli altri sono riassunti di esempio
+    // Livello dei mesi: ottobre viene dai dati dell'esempio, gli altri sono riassunti di esempio;
+    // filled sono i giorni registrati, total i giorni del mese
+    const octFilled = days.filter((d) => d.mese === 'ottobre' && !d.missing).length;
     const monthData = [
-      { name: 'Ottobre', v: 'buono', longest: 16, weeks: weeks.map((w) => w.mode) },
-      { name: 'Settembre', v: 'medio', longest: 11, weeks: ['basso', 'medio', 'buono', 'medio'] },
-      { name: 'Agosto', v: 'buono', longest: 31, weeks: ['buono', 'buono', 'medio', 'buono', 'buono'] },
-      { name: 'Luglio', v: 'basso', longest: 4, weeks: ['basso', 'none', 'medio', 'basso'] }
+      { name: 'Ottobre', v: 'buono', longest: 16, filled: octFilled, total: 31 },
+      { name: 'Settembre', v: 'medio', longest: 11, filled: 27, total: 30 },
+      { name: 'Agosto', v: 'buono', longest: 31, filled: 31, total: 31 },
+      { name: 'Luglio', v: 'basso', longest: 4, filled: 19, total: 31 }
     ];
     const yPts = [];
     const months = monthData.map((m, k) => {
@@ -628,22 +631,17 @@ class Component extends DCLogic {
       const x = bx + o.x, y = by + o.y;
       yPts.push({ x, y });
       const right = bx < 195;
-      // Filo in miniatura: le quattro settimane più recenti su una S morbida; sotto, se ce ne sono altre, una nuova S appena iniziata
-      const sm = this.miniS(116 / 104);
-      const inner = m.weeks.slice(0, 4).map((wv, j) => ({ ...sm.dots[j], v: wv }));
-      const moreM = m.weeks.length > 4 ? sm.more : [];
+      // Liquido: sale con i giorni registrati del mese; il mese in corso si riempie giorno dopo giorno
       return {
         ...ap(3 - k),
         l: x - 58, t: y - 58,
-        mini: sm.path,
-        tail: moreM.length ? sm.tail : '',
-        more: moreM.map((pt) => ({ l: pt.x - 2.5, t: pt.y - 2.5 })),
-        dots: inner.map((pt) => ({ l: pt.x - 7, t: pt.y - 7, bg: c.v[pt.v][1] })),
-        bg: sphereBg(m.v),
+        waveBack: this.liquid(116, m.filled / m.total, -t * 1.3 + k + 2),
+        waveFront: this.liquid(116, m.filled / m.total, t * 1.6 + k),
+        liqBack: c.v[m.v][0], liqFront: c.v[m.v][1],
         lx: right ? x + 70 : x - 200, ly: y - 22, align: right ? 'flex-start' : 'flex-end',
         label: m.name,
         maxText: 'Max ' + m.longest + ' gg',
-        aria: m.name + ', serie più lunga ' + m.longest + ' giorni',
+        aria: m.name + ', serie più lunga ' + m.longest + ' giorni, ' + m.filled + ' giorni su ' + m.total,
         open: () => { if (!ignore()) this.goTo('mese', { px: 0, py: 0 }, 1); }
       };
     });
@@ -741,9 +739,14 @@ class Component extends DCLogic {
       bub: {
         o: !st.pill && st.intro > 8 ? 1 : 0, s: st.pill ? 0.35 : 1, y: st.pill ? 16 : 0,
         pe: st.pill ? 'none' : 'auto', delay: st.pill ? '0ms' : '320ms',
-        left: { destra: 326, sinistra: 20, centro: 173 }[this.props.maniglia ?? 'destra']
+        left: { destra: 326, sinistra: 20, centro: 173 }[this.props.maniglia ?? 'destra'],
+        // La freccia punta verso il centro dello schermo, dove la pillola si apre: a sinistra dal bordo destro,
+        // a destra dal bordo sinistro, in su dal centro
+        arrow: { destra: 'M15 6l-6 6 6 6', sinistra: 'M9 6l6 6-6 6', centro: 'M6 15l6-6 6 6' }[this.props.maniglia ?? 'destra']
       },
-      pillOrigin: { destra: '90% 100%', sinistra: '10% 100%', centro: '50% 100%' }[this.props.maniglia ?? 'destra'],
+      // Il punto da cui cresce la pillola: il centro del bollino, così si apre verso la direzione della freccia;
+      // al centro cresce dal basso verso l'alto
+      pillOrigin: { destra: '93.6% 100%', sinistra: '6.4% 100%', centro: '50% 100%' }[this.props.maniglia ?? 'destra'],
       openPill: () => this.showPill(),
       onWheel: (e) => {
         this.hidePill();
